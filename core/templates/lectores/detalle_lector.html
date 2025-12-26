@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil de Lector{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow border-0 text-center p-4">
+            <div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                <i class="bi bi-person display-4 text-secondary"></i>
+            </div>
+            <h4 class="fw-bold">{{ lector.first_name }} {{ lector.last_name }}</h4>
+            <p class="text-muted mb-1">{{ lector.email }}</p>
+            <p class="badge {% if lector.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                {% if lector.is_active %}Activo{% else %}Inactivo{% endif %}
+            </p>
+            
+            <hr>
+            
+            <div class="row text-center mt-3">
+                <div class="col-6 mb-3">
+                    <h5 class="fw-bold text-primary">{{ total_prestamos }}</h5>
+                    <small class="text-muted">Total Préstamos</small>
+                </div>
+                <div class="col-6 mb-3">
+                    <h5 class="fw-bold text-warning">{{ prestamos_activos }}</h5>
+                    <small class="text-muted">Activos</small>
+                </div>
+                <div class="col-12">
+                    <h5 class="fw-bold text-danger">S/. {{ total_multas|floatformat:2 }}</h5>
+                    <small class="text-muted">Multas Acumuladas</small>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <a href="{% url 'carnet_lector_pdf' lector.id %}" class="btn btn-outline-dark" target="_blank">
+                    <i class="bi bi-person-badge"></i> Imprimir Carnet
+                </a>
+                <a href="{% url 'lista_lectores' %}" class="btn btn-light">Volver a lista</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 py-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history"></i> Historial de Movimientos</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light"><tr><th>Libro</th><th>Fecha</th><th>Estado</th><th>Multa</th></tr></thead>
+                    <tbody>
+                        {% for p in historial %}
+                        <tr>
+                            <td class="fw-bold">{{ p.libro.titulo }}</td>
+                            <td>{{ p.fecha_prestamo|date:"d/m/y" }}</td>
+                            <td>
+                                {% if p.estado == 'P' %}
+                                    {% if p.esta_vencido %}<span class="badge bg-danger">Vencido</span>
+                                    {% else %}<span class="badge bg-warning text-dark">Prestado</span>{% endif %}
+                                {% else %}<span class="badge bg-success">Devuelto</span>{% endif %}
+                            </td>
+                            <td>
+                                {% if p.multa > 0 %}<span class="text-danger fw-bold">S/. {{ p.multa }}</span>
+                                {% else %}<span class="text-muted">-</span>{% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center py-4">Sin historial.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

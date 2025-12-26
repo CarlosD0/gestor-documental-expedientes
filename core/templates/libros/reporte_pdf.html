@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Inventario</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        body {
+            font-family: Helvetica, sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .header-info {
+            text-align: center;
+            font-size: 10px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .stock-bajo {
+            color: red;
+            font-weight: bold;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reporte de Inventario - Biblioteca</h1>
+    <div class="header-info">
+        Generado el: {{ fecha|date:"d/m/Y H:i" }} | Sistema de Gestión Profesional
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ISBN</th>
+                <th>Título del Libro</th>
+                <th>Autor</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for libro in libros %}
+            <tr>
+                <td>{{ libro.isbn }}</td>
+                <td>{{ libro.titulo }}</td>
+                <td>{{ libro.autor }}</td>
+                <td>
+                    {% if libro.categoria %}{{ libro.categoria }}{% else %}-{% endif %}
+                </td>
+                <td>
+                    {% if libro.stock <= 1 %}
+                        <span class="stock-bajo">{{ libro.stock }} (Bajo)</span>
+                    {% else %}
+                        {{ libro.stock }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        Documento generado automáticamente por el Sistema de Biblioteca.
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; }
+        .card { border: 1px solid #dc3545; border-radius: 8px; overflow: hidden; max-width: 600px; margin: 0 auto; }
+        .header { background-color: #dc3545; color: white; padding: 15px; text-align: center; }
+        .content { padding: 20px; background-color: #fff; }
+        .alert { background-color: #ffe6e6; color: #b02a37; padding: 10px; border-radius: 4px; margin: 15px 0; text-align: center; font-weight: bold; }
+        .details { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .details td { padding: 8px; border-bottom: 1px solid #eee; }
+        .footer { font-size: 11px; text-align: center; color: #999; padding: 15px; background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <h2 style="margin:0;">⚠️ Recordatorio de Devolución</h2>
+        </div>
+        <div class="content">
+            <p>Estimado/a <strong>{{ prestamo.usuario.first_name }}</strong>,</p>
+            
+            <p>Le informamos que tiene un préstamo bibliotecario que ha excedido su fecha límite de devolución.</p>
+            
+            <div class="alert">
+                ¡El libro tiene {{ dias_retraso }} días de retraso!
+            </div>
+
+            <table class="details">
+                <tr><td><strong>Libro:</strong></td><td>{{ prestamo.libro.titulo }}</td></tr>
+                <tr><td><strong>Fecha Límite:</strong></td><td>{{ prestamo.fecha_devolucion_estimada|date:"d/m/Y" }}</td></tr>
+                <tr><td><strong>Multa Estimada:</strong></td><td style="color: #dc3545;">S/. {{ deuda|floatformat:2 }}</td></tr>
+            </table>
+
+            <p>Le rogamos acercarse a la biblioteca lo antes posible para regularizar su situación y evitar mayores sanciones.</p>
+        </div>
+        <div class="footer">
+            Biblioteca Central - Departamento de Cobranzas
+        </div>
+    </div>
+</body>
+</html>

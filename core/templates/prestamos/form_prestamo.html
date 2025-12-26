@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Préstamo{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card card-custom shadow-lg border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-journal-plus"></i> Registrar Nuevo Préstamo</h4>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.libro.id_for_label }}" class="form-label fw-bold">Seleccionar Libro</label>
+                        {{ form.libro }}
+                        <div class="form-text text-muted">Solo aparecen libros con stock disponible.</div>
+                        {% if form.libro.errors %}
+                            <div class="text-danger small mt-1">{{ form.libro.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.usuario.id_for_label }}" class="form-label fw-bold">Usuario / Lector</label>
+                        {{ form.usuario }}
+                        <div class="form-text text-muted">Busca por nombre o usuario.</div>
+                        {% if form.usuario.errors %}
+                            <div class="text-danger small mt-1">{{ form.usuario.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.fecha_devolucion_estimada.id_for_label }}" class="form-label fw-bold">Fecha de Devolución</label>
+                        {{ form.fecha_devolucion_estimada }}
+                        <div class="form-text text-muted">Fecha límite sugerida (7 días por defecto).</div>
+                        {% if form.fecha_devolucion_estimada.errors %}
+                            <div class="text-danger small mt-1">{{ form.fecha_devolucion_estimada.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="bi bi-save-fill"></i> Registrar Préstamo
+                        </button>
+                        <a href="{% url 'lista_prestamos' %}" class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Aplicar buscador al campo Libro
+        $('#id_libro').select2({
+            theme: "bootstrap-5",
+            width: '100%',
+            placeholder: "Escribe para buscar un libro...",
+            allowClear: true
+        });
+
+        // Aplicar buscador al campo Usuario
+        $('#id_usuario').select2({
+            theme: "bootstrap-5",
+            width: '100%',
+            placeholder: "Escribe para buscar un lector...",
+            allowClear: true
+        });
+    });
+</script>
+{% endblock %}

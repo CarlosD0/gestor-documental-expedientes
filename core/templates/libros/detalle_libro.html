@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle: {{ libro.titulo }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow border-0">
+            <div class="card-body text-center p-4 bg-light">
+                {% if libro.portada %}
+                    <img src="{{ libro.portada.url }}" class="img-fluid rounded shadow-sm" style="max-height: 400px;">
+                {% else %}
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded shadow-sm mx-auto" style="height: 350px; width: 250px;">
+                        <i class="bi bi-book display-1"></i>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h2 class="display-6 fw-bold mb-3">{{ libro.titulo }}</h2>
+        
+        <p class="text-muted fs-5 mb-4">
+            <i class="bi bi-person-fill"></i> {{ libro.autor.nombre }}
+        </p>
+
+        <div class="mb-4">
+            {% if libro.activo %}
+                {% if libro.disponible and libro.stock > 0 %}
+                    <span class="badge bg-success fs-6 px-3 py-2">
+                        <i class="bi bi-check-circle-fill me-1"></i> Disponible
+                    </span>
+                {% else %}
+                    <span class="badge bg-danger fs-6 px-3 py-2">
+                        <i class="bi bi-x-circle-fill me-1"></i> Agotado / En Préstamo
+                    </span>
+                {% endif %}
+                <span class="badge bg-secondary fs-6 px-3 py-2 ms-2">Stock: {{ libro.stock }}</span>
+            {% else %}
+                <span class="badge bg-dark fs-6 px-3 py-2">No Disponible (Inactivo)</span>
+            {% endif %}
+        </div>
+
+        <div class="card card-custom mb-4">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">Sinopsis</h5>
+                <p class="card-text text-muted">
+                    {% if libro.descripcion %}
+                        {{ libro.descripcion }}
+                    {% else %}
+                        No hay descripción disponible para este libro.
+                    {% endif %}
+                </p>
+                <hr>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <small class="text-uppercase text-muted fw-bold">Categoría</small>
+                        <p class="mb-0">{{ libro.categoria|default:"-" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-uppercase text-muted fw-bold">ISBN</small>
+                        <p class="mb-0">{{ libro.isbn }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 d-grid gap-2 d-md-block">
+            <a href="{% url 'lista_libros' %}" class="btn btn-outline-secondary px-4">
+                <i class="bi bi-arrow-left"></i> Volver al Catálogo
+            </a>
+            
+            {% if libro.activo %}
+                {% if libro.stock > 0 %}
+                    {% if user.is_staff %}
+                        <a href="{% url 'registrar_prestamo' %}?libro_id={{ libro.id }}" class="btn btn-primary px-4">
+                            <i class="bi bi-plus-circle"></i> Prestar este libro
+                        </a>
+                    {% else %}
+                        <button class="btn btn-success px-4 disabled">
+                            <i class="bi bi-check-lg"></i> Disponible en Biblioteca
+                        </button>
+                    {% endif %}
+                {% else %}
+                    {% if tiene_reserva %}
+                        <button class="btn btn-warning px-4 disabled text-dark" disabled>
+                            <i class="bi bi-clock-history"></i> Ya estás en lista de espera
+                        </button>
+                    {% else %}
+                        <a href="{% url 'reservar_libro' libro.id %}" class="btn btn-warning px-4 text-dark fw-bold" title="Te avisaremos cuando se devuelva">
+                            <i class="bi bi-calendar-check"></i> Unirse a Lista de Espera
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <button class="btn btn-secondary disabled">Libro Inactivo</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if relacionados %}
+<div class="mt-5">
+    <h4 class="fw-bold mb-4">También te podría interesar</h4>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        {% for rel in relacionados %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                {% if rel.portada %}
+                    <img src="{{ rel.portada.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-light text-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="bi bi-book fs-1"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title fw-bold text-truncate">{{ rel.titulo }}</h6>
+                    <a href="{% url 'detalle_libro' rel.id %}" class="btn btn-sm btn-outline-primary mt-2 stretched-link">Ver detalle</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

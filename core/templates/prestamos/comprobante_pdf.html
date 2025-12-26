@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Comprobante de Préstamo #{{ prestamo.id }}</title>
+    <style>
+        @page {
+            size: A5 landscape;
+            margin: 1cm;
+        }
+        body {
+            font-family: Helvetica, sans-serif;
+            color: #333;
+            line-height: 1.4;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 { margin: 0; color: #0d6efd; text-transform: uppercase; font-size: 18px; }
+        .header p { margin: 2px; font-size: 10px; color: #666; }
+        
+        .info-box {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .info-table th { text-align: left; padding: 5px; color: #666; font-size: 10px; width: 30%; }
+        .info-table td { padding: 5px; font-weight: bold; border-bottom: 1px solid #eee; font-size: 12px; }
+
+        .terminos {
+            margin-top: 30px;
+            font-size: 9px;
+            color: #777;
+            text-align: justify;
+            border-top: 1px dashed #ccc;
+            padding-top: 10px;
+        }
+
+        .firmas {
+            margin-top: 50px;
+            width: 100%;
+        }
+        .firma-box {
+            width: 40%;
+            border-top: 1px solid #333;
+            text-align: center;
+            font-size: 10px;
+            display: inline-block;
+            margin: 0 5%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ institucion }}</h1>
+        <p>Comprobante de Préstamo Bibliotecario</p>
+        <p>Generado el: {{ fecha_impresion|date:"d/m/Y H:i" }}</p>
+    </div>
+
+    <div class="info-box">
+        <table class="info-table">
+            <tr>
+                <th>CÓDIGO PRÉSTAMO:</th>
+                <td>#{{ prestamo.id|stringformat:"06d" }}</td>
+            </tr>
+            <tr>
+                <th>LECTOR:</th>
+                <td>{{ prestamo.usuario.first_name }} {{ prestamo.usuario.last_name }} ({{ prestamo.usuario.username }})</td>
+            </tr>
+            <tr>
+                <th>LIBRO:</th>
+                <td>{{ prestamo.libro.titulo }}</td>
+            </tr>
+            <tr>
+                <th>AUTOR:</th>
+                <td>{{ prestamo.libro.autor.nombre }}</td>
+            </tr>
+            <tr>
+                <th>ISBN:</th>
+                <td>{{ prestamo.libro.isbn }}</td>
+            </tr>
+            <tr>
+                <th>FECHA PRÉSTAMO:</th>
+                <td>{{ prestamo.fecha_prestamo|date:"d" }} de {{ prestamo.fecha_prestamo|date:"F" }}, {{ prestamo.fecha_prestamo|date:"Y" }}</td>
+            </tr>
+            <tr>
+                <th>DEVOLUCIÓN LÍMITE:</th>
+                <td style="color: #dc3545;">
+                    {{ prestamo.fecha_devolucion_estimada|date:"d" }} de {{ prestamo.fecha_devolucion_estimada|date:"F" }}, {{ prestamo.fecha_devolucion_estimada|date:"Y" }}
+                </td>
+            </tr>
+            <tr>
+                <th>ESTADO ACTUAL:</th>
+                <td>
+                    {% if prestamo.estado == 'P' %}
+                        <span style="color: orange;">EN PRÉSTAMO</span>
+                        {% if prestamo.esta_vencido %} <span style="color: red;">(VENCIDO)</span> {% endif %}
+                    {% else %}
+                        <span style="color: green;">DEVUELTO</span> ({{ prestamo.fecha_devolucion_real|date:"d/m/Y" }})
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="terminos">
+        <strong>Términos y Condiciones:</strong> El usuario se compromete a devolver el material bibliográfico en la fecha indicada y en las mismas condiciones en las que fue entregado. La demora en la devolución generará la suspensión temporal del servicio de préstamo. En caso de pérdida o deterioro, el usuario deberá reponer el material.
+    </div>
+
+    <table class="firmas">
+        <tr>
+            <td class="firma-box">Firma del Bibliotecario</td>
+            <td class="firma-box">Conformidad del Lector</td>
+        </tr>
+    </table>
+</body>
+</html>

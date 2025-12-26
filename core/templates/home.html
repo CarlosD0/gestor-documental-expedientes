@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+{% if es_admin %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold text-dark">Panel de Control</h2>
+            <p class="text-muted">Resumen general y estadísticas del sistema</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><h6 class="card-title mb-0">Total Libros</h6><h2 class="my-2 display-6 fw-bold">{{ total_libros }}</h2></div>
+                    <i class="bi bi-book-half fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><h6 class="card-title mb-0">Lectores</h6><h2 class="my-2 display-6 fw-bold">{{ total_lectores }}</h2></div>
+                    <i class="bi bi-people-fill fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><h6 class="card-title mb-0">En Préstamo</h6><h2 class="my-2 display-6 fw-bold">{{ total_prestamos }}</h2></div>
+                    <i class="bi bi-journal-arrow-up fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <a href="{% url 'lista_morosos' %}" class="text-decoration-none">
+                <div class="card text-white bg-danger shadow h-100 position-relative overflow-hidden">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div><h6 class="card-title mb-0">Vencidos / Mora</h6><h2 class="my-2 display-6 fw-bold">{{ total_vencidos }}</h2></div>
+                        <i class="bi bi-exclamation-triangle-fill fs-1 opacity-50"></i>
+                    </div>
+                    <div class="card-footer bg-danger border-top-0 text-center py-1" style="background-color: rgba(0,0,0,0.1) !important;">
+                        <small>Ver detalles <i class="bi bi-arrow-right"></i></small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3"><h5 class="mb-0 fw-bold">📚 Distribución por Categorías</h5></div>
+                <div class="card-body"><canvas id="chartCategorias" style="max-height: 300px;"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3"><h5 class="mb-0 fw-bold">📊 Rendimiento de Préstamos</h5></div>
+                <div class="card-body"><canvas id="chartPrestamos" style="max-height: 300px;"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card card-custom shadow-sm">
+                <div class="card-header bg-white border-0 py-3"><h5 class="mb-0 fw-bold">Últimos Libros</h5></div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light"><tr><th>Título</th><th>Autor</th><th class="text-center">Stock</th></tr></thead>
+                        <tbody>
+                            {% for libro in libros_recientes %}
+                            <tr>
+                                <td class="fw-bold">{{ libro.titulo }}</td><td>{{ libro.autor }}</td>
+                                <td class="text-center"><span class="badge bg-secondary">{{ libro.stock }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card card-custom shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3"><h5 class="mb-0 fw-bold">Accesos</h5></div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'registrar_prestamo' %}" class="btn btn-outline-primary text-start p-3 shadow-sm"><i class="bi bi-plus-circle-fill me-2"></i> Nuevo Préstamo</a>
+                        <a href="{% url 'registrar_libro' %}" class="btn btn-outline-secondary text-start p-3 shadow-sm"><i class="bi bi-book me-2"></i> Registrar Libro</a>
+                        <a href="{% url 'registrar_lector' %}" class="btn btn-outline-info text-start p-3 shadow-sm"><i class="bi bi-person-plus-fill me-2"></i> Nuevo Lector</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-custom shadow-sm border-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold text-dark">Administración</h5>
+                    <p class="small text-muted">Configura costos, días y datos de la empresa.</p>
+                    <a href="{% url 'ajustes_sistema' %}" class="btn btn-warning w-100 fw-bold text-dark">
+                        <i class="bi bi-gear-fill"></i> Ajustes Generales
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctxCat = document.getElementById('chartCategorias').getContext('2d');
+        new Chart(ctxCat, {
+            type: 'doughnut',
+            data: {
+                labels: {{ cat_labels|safe }},
+                datasets: [{ data: {{ cat_data|safe }}, backgroundColor: ['#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545', '#fd7e14', '#ffc107', '#198754'], borderWidth: 1 }]
+            }, options: { responsive: true, maintainAspectRatio: false }
+        });
+        const ctxPre = document.getElementById('chartPrestamos').getContext('2d');
+        new Chart(ctxPre, {
+            type: 'bar',
+            data: {
+                labels: ['Al Día', 'Vencidos/Mora', 'Histórico Devueltos'],
+                datasets: [{ label: 'Cantidad', data: {{ prestamos_data|safe }}, backgroundColor: ['#198754', '#dc3545', '#0dcaf0'], borderWidth: 1 }]
+            }, options: { plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
+        });
+    </script>
+
+{% else %}
+    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 fw-bold text-primary">¡Bienvenido, {{ user.first_name }}!</h1>
+            <p class="col-md-8 fs-4 mx-auto text-muted">Explora nuestro catálogo.</p>
+            <a href="{% url 'lista_libros' %}" class="btn btn-primary btn-lg px-5 mt-3 rounded-pill shadow">Explorar</a>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
