@@ -1,44 +1,214 @@
-{% extends 'base.html' %}
 
-{% block title %}Iniciar Sesión{% endblock %}
+{% load static %}
+
+{% block title %}{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card card-custom shadow-lg">
-            <div class="card-header bg-primary text-white text-center py-3">
-                <h4 class="mb-0"><i class="bi bi-person-circle"></i> Acceso Al Gestor Documental</h4>
-            </div>
-            <div class="card-body p-4">
-                
-                {% if form.errors %}
-                    <div class="alert alert-danger text-center mb-3">
-                        <small>Usuario o contraseña incorrectos.</small>
-                    </div>
-                {% endif %}
 
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label class="form-label text-muted">Usuario</label>
-                        <input type="text" name="username" class="form-control form-control-lg" autofocus required>
-                    </div>
+<div class="login-becas-bg">
 
-                    <div class="mb-4">
-                        <label class="form-label text-muted">Contraseña</label>
-                        <input type="password" name="password" class="form-control form-control-lg" required>
-                    </div>
+    <div class="login-card-becas">
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">Ingresar al Sistema</button>
-                    </div>
-                </form>
-            </div>
-            <div class="card-footer text-center bg-light">
-                <small class="text-muted">Sistema de Gestión v1.0</small>
-            </div>
+        <div class="login-card-header">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-person-circle"></i>
+                Acceso Al Gestor Documental
+            </h4>
         </div>
+
+        <div class="login-card-body">
+
+            {% if form.errors %}
+                <div class="alert alert-danger text-center">
+                    Usuario o contraseña incorrectos.
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label text-muted">Usuario</label>
+                    <input type="text"
+                           name="username"
+                           class="form-control form-control-lg"
+                           autofocus
+                           required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-muted">Contraseña</label>
+                    <input type="password"
+                           name="password"
+                           class="form-control form-control-lg"
+                           required>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit"
+                            class="btn btn-login-becas btn-lg">
+                        Ingresar al Sistema
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="login-card-footer">
+            Sistema de Gestión v1.0
+        </div>
+
     </div>
+
 </div>
+
+<style>
+
+.login-becas-bg {
+
+    width: 100vw;
+    min-height: 100vh;
+
+    background-image:
+        url("{% static 'img/login_becas_bg.png' %}");
+
+    background-size: cover;
+
+    background-position: center center;
+
+    background-repeat: no-repeat;
+
+    background-attachment: fixed;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 20px;
+
+    overflow: hidden;
+
+}
+
+.login-card-becas {
+    width: 100%;
+    max-width: 560px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 18px 45px rgba(0,0,0,.35);
+}
+
+.login-card-header {
+    background: linear-gradient(135deg, #b88a2d, #f3df9b, #b88a2d);
+    color: #16408b;
+    text-align: center;
+    padding: 20px;
+}
+
+.login-card-body {
+    padding: 32px;
+}
+
+.login-card-footer {
+    text-align: center;
+    background: #f8f9fa;
+    color: #6c757d;
+    padding: 14px;
+    border-top: 1px solid #e9ecef;
+    font-size: .9rem;
+}
+
+.login-card-becas .form-control {
+    border-radius: 10px;
+    min-height: 50px;
+}
+
+.btn-login-becas {
+    background: linear-gradient(135deg, #b88a2d, #f3df9b, #b88a2d);
+    border: none;
+    color: #212529;
+    font-weight: 700;
+    border-radius: 10px;
+}
+
+.btn-login-becas:hover {
+    color: #212529;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .login-becas-bg {
+        padding: 40px 15px;
+        background-position: center;
+    }
+
+    .login-card-becas {
+        max-width: 95%;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .login-becas-bg {
+
+        background-image:
+            linear-gradient(
+                rgba(106,15,43,.55),
+                rgba(106,15,43,.55)
+            ),
+            url("{% static 'img/login_becas_bg.png' %}");
+
+        background-size: cover;
+
+        background-position: center;
+
+        background-repeat: no-repeat;
+
+        background-attachment: scroll;
+
+        padding: 20px;
+
+        align-items: center;
+
+    }
+
+    .login-card-becas {
+
+        width: 100%;
+
+        max-width: 95%;
+
+        border-radius: 18px;
+
+    }
+
+    .login-card-header h4 {
+
+        font-size: 1.3rem;
+
+    }
+
+    .login-card-body {
+
+        padding: 22px;
+
+    }
+
+    .btn-login-becas {
+
+        font-size: 1.1rem;
+
+    }
+
+}
+</style>
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
 {% endblock %}

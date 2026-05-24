@@ -98,12 +98,28 @@
             {% for programa in programas %}
 
 <a href="?programa={{ programa.id }}"
-   class="btn btn-primary rounded-pill">
+   class="btn rounded-pill px-4 py-2 fw-semibold shadow-sm
+
+   {% if programa.clave == 'RITA_SEC' %}
+        btn-programa-rita
+
+   {% elif programa.clave == 'BUEMS' %}
+        btn-programa-benito
+
+   {% elif programa.clave == 'JEF' %}
+        btn-programa-jef
+
+   {% elif programa.clave == 'RITA_PRIM' %}
+        btn-programa-utiles
+
+   {% else %}
+        btn-primary
+
+   {% endif %}">
 
     {{ programa.nombre }}
 
 </a>
-
 {% endfor %}
 
         </div>
