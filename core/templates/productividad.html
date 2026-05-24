@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+
+{% block title %}Productividad{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">
+                <i class="bi bi-graph-up-arrow text-primary"></i>
+                Productividad
+            </h2>
+
+            <p class="text-muted mb-0">
+                Estadísticas generales del sistema
+            </p>
+        </div>
+    </div>
+
+    <!-- TARJETAS -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-6 col-xl-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+                            <p class="text-muted mb-1">
+                                Total Entregadas
+                            </p>
+
+                            <h3 class="fw-bold">
+                                {{ total_entregas }}
+                            </h3>
+                        </div>
+
+                        <div>
+                            <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+                            <p class="text-muted mb-1">
+                                Entregas Hoy
+                            </p>
+
+                            <h3 class="fw-bold">
+                                {{ entregas_hoy }}
+                            </h3>
+                        </div>
+
+                        <div>
+                            <i class="bi bi-calendar-check-fill text-primary fs-1"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABLA PRODUCTIVIDAD -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-people-fill"></i>
+                Productividad por Usuario
+            </h5>
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Usuario</th>
+                        <th>Total Entregas</th>
+                        <th>Entregas Hoy</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for usuario in usuarios_productividad %}
+
+                    <tr>
+
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ usuario.autor__nombre }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-success">
+                                {{ usuario.total_capturas }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-primary">
+                                {{ usuario.capturas_hoy }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">
+                            No hay registros todavía
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- MUNICIPIOS -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-geo-alt-fill"></i>
+                Avance por Municipio
+            </h5>
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Municipio</th>
+                        <th>Total</th>
+                        <th>Entregados</th>
+                        <th>Pendientes</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for m in municipios %}
+
+                    <tr>
+
+                        <td>
+                            <strong>{{ m.municipio }}</strong>
+                        </td>
+
+                        <td>
+                            {{ m.total }}
+                        </td>
+
+                        <td>
+                            <span class="badge bg-success">
+                                {{ m.entregados }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-warning text-dark">
+                                {{ m.pendientes }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- ÚLTIMAS CAPTURAS -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-clock-history"></i>
+                Últimas Capturas
+            </h5>
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Beneficiario</th>
+                        <th>Municipio</th>
+                        <th>Capturado Por</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in ultimas_capturas %}
+
+                    <tr>
+
+                        <td>
+                            {{ item.titulo }}
+                        </td>
+
+                        <td>
+                            {{ item.municipio }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ item.autor.nombre }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item.fecha_entrega|date:"d/m/Y" }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

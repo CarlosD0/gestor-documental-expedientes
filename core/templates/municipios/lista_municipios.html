@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Municipios{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold">
+                <i class="bi bi-geo-alt-fill text-primary"></i>
+                Municipios
+            </h2>
+
+            <p class="text-muted mb-0">
+                Catálogo oficial de municipios
+            </p>
+        </div>
+        {% if user.is_staff %}
+        <a href="{% url 'registrar_municipio' %}"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-circle-fill"></i>
+            Nuevo Municipio
+
+        </a>
+        {% endif %}
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>Clave Estado</th>
+                        <th>Estado</th>
+                        <th>Clave Municipio</th>
+                        <th>Municipio</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for municipio in municipios %}
+
+                    <tr>
+
+                        <td>
+                            <span class="badge bg-dark">
+                                {{ municipio.clave_estado }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ municipio.estado }}
+                        </td>
+
+                        <td>
+                            <span class="badge bg-primary">
+                                {{ municipio.clave }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ municipio.nombre }}
+                            </strong>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4"
+                            class="text-center text-muted py-4">
+
+                            No hay municipios registrados
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

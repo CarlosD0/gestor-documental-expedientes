@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Importar Expedientes{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+
+        <div class="card card-custom shadow-sm">
+
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                    Importación Masiva de Expedientes
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="alert alert-info border-0 shadow-sm mb-4">
+
+                    <h6 class="fw-bold">
+                        <i class="bi bi-info-circle-fill"></i>
+                        Instrucciones
+                    </h6>
+
+                    <p class="small mb-2">
+                        Sube un archivo Excel <strong>.xlsx</strong> con el formato oficial de expedientes.
+                    </p>
+
+                    <p class="small mb-0">
+                        Columnas requeridas:
+                    </p>
+
+                    <div class="bg-white rounded p-3 mt-2 small border">
+                        <strong>
+                            CURP |
+                            ID TARJETA |
+                            BENEFICIARIO |
+                            PROGRAMA |
+                            CUPO |
+                            CCT |
+                            ESCUELA |
+                            MUNICIPIO |
+                            LOCALIDAD |
+                            PERIODO |
+                            FECHA ENTREGA |
+                            ESTATUS |
+                            OBSERVACIONES
+                        </strong>
+                    </div>
+
+                    <p class="small text-muted mt-2 mb-0">
+                        En la columna <strong>PROGRAMA</strong> usa:
+                        <strong>RITA</strong>, <strong>BENITO</strong> o <strong>JEF</strong>.
+                        En <strong>ESTATUS</strong> usa:
+                        <strong>PENDIENTE</strong> o <strong>ENTREGADO</strong>.
+                    </p>
+
+                </div>
+
+                <div class="d-grid gap-2 mb-4">
+
+                    <a href="{% url 'descargar_plantilla_excel' %}"
+                       class="btn btn-outline-success btn-lg">
+
+                        <i class="bi bi-download"></i>
+                        Descargar plantilla Excel
+
+                    </a>
+
+                </div>
+
+                <form method="post"
+      enctype="multipart/form-data"
+      id="formImportar">
+
+    {% csrf_token %}
+
+    <div class="mb-4">
+
+        <label class="form-label fw-bold">
+            Archivo Excel
+        </label>
+
+        {{ form.archivo_excel }}
+
+    </div>
+
+    <div id="mensajeProcesando"
+         class="alert alert-warning d-none">
+
+        <div class="d-flex align-items-center gap-2">
+
+            <div class="spinner-border spinner-border-sm"
+                 role="status"></div>
+
+            <strong>
+                Procesando archivo, espera un momento...
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div class="d-grid gap-2">
+
+        <button type="submit"
+                id="btnImportar"
+                class="btn btn-success btn-lg">
+
+            <i class="bi bi-cloud-upload-fill"></i>
+            Subir e Importar
+
+        </button>
+
+        <a href="{% url 'lista_libros' %}"
+           class="btn btn-outline-secondary">
+
+            Cancelar
+
+        </a>
+
+    </div>
+
+</form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    const formImportar = document.getElementById('formImportar');
+    const btnImportar = document.getElementById('btnImportar');
+    const mensajeProcesando = document.getElementById('mensajeProcesando');
+
+    formImportar.addEventListener('submit', function () {
+
+        btnImportar.disabled = true;
+
+        btnImportar.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+            Procesando...
+        `;
+
+        mensajeProcesando.classList.remove('d-none');
+
+    });
+
+</script>
+{% endblock %}

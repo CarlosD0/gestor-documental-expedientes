@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+
+<style>
+
+    @page{
+        size: letter portrait;
+        margin: 18px;
+    }
+
+    body{
+        font-family: Arial, sans-serif;
+        font-size: 8px;
+        color:#000;
+    }
+
+    .logos{
+        width:100%;
+        margin-bottom:10px;
+    }
+
+    .logos td{
+        border:none;
+        text-align:center;
+        vertical-align:middle;
+    }
+
+    .logo-gob{
+        width:120px;
+    }
+
+    .logo-edu{
+        width:120px;
+    }
+
+    .logo-becas{
+        width:140px;
+    }
+
+    .encabezado{
+        width:100%;
+        margin-bottom:10px;
+    }
+
+    .encabezado td{
+        border:none;
+        padding:2px;
+        font-size:8px;
+        vertical-align:top;
+    }
+
+    .titulo{
+        text-align:center;
+        font-weight:bold;
+        font-size:10px;
+        margin-top:8px;
+        margin-bottom:12px;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+    }
+
+    .tabla th{
+        border:1px solid #000;
+        background:#e9e9e9;
+        padding:4px;
+        font-size:7px;
+        text-align:center;
+    }
+
+    .tabla td{
+        border:1px solid #000;
+        padding:4px;
+        font-size:7px;
+    }
+
+    .center{
+        text-align:center;
+    }
+
+    .estado-ok{
+        background:#d9ead3;
+        font-weight:bold;
+        text-align:center;
+    }
+
+    .estado-pend{
+        background:#f4cccc;
+        font-weight:bold;
+        text-align:center;
+    }
+
+    .total{
+        margin-top:15px;
+        width:100%;
+    }
+
+    .total td{
+        border:none;
+        font-size:8px;
+        font-weight:bold;
+    }
+
+    .total-box{
+        border:1px solid #000 !important;
+        width:60px;
+        text-align:center;
+        padding:6px;
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<table class="logos">
+
+    <tr>
+
+        <td>
+            <img src="{% static 'img/gobierno.jpg' %}"
+                 class="logo-gob">
+        </td>
+
+        <td>
+            <img src="{% static 'img/educacion.png' %}"
+                 class="logo-edu">
+        </td>
+
+        <td>
+            <img src="{% static 'img/becas.png' %}"
+                 class="logo-becas">
+        </td>
+
+    </tr>
+
+</table>
+
+<table class="encabezado">
+
+    <tr>
+
+        <td width="50%">
+            <strong>ESTADO:</strong>
+
+            {% if municipio %}
+                {{ municipio.clave_estado }} {{ municipio.estado }}
+            {% else %}
+                30 VERACRUZ
+            {% endif %}
+        </td>
+
+        <td width="50%">
+            <strong>CCT:</strong>
+            {{ cct }}
+        </td>
+
+    </tr>
+
+    <tr>
+
+    <td width="50%">
+        <strong>MUNICIPIO:</strong>
+
+        {% if municipio %}
+            {{ municipio.clave }} {{ municipio.nombre }}
+        {% endif %}
+    </td>
+
+    <td width="50%">
+        <strong>PLANTEL:</strong>
+
+        {% if libros %}
+            {{ libros.0.nombre_escuela }}
+        {% endif %}
+    </td>
+
+</tr>
+
+    <tr>
+
+    <td width="50%">
+        <strong>LOCALIDAD:</strong>
+
+        {% if localidad %}
+            {{ localidad.clave }} {{ localidad.nombre }}
+        {% endif %}
+    </td>
+
+    <td width="50%"></td>
+
+</tr>
+
+</table>
+
+<div class="titulo">
+    {{ titulo_caratula }}
+</div>
+
+<table class="tabla">
+
+    <thead>
+
+        <tr>
+
+            <th width="15%">FOLIO ID</th>
+            <th width="18%">CURP</th>
+            <th width="22%">NOMBRE</th>
+            <th width="18%">APE_PAT</th>
+            <th width="18%">APE_MAT</th>
+            <th width="9%">RESULTADO</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for libro in libros %}
+
+        <tr>
+
+            <td class="center">
+                {{ libro.id_tarjeta }}
+            </td>
+
+            <td class="center">
+                {{ libro.curp }}
+            </td>
+
+            <td>
+                {{ libro.nombre }}
+            </td>
+
+            <td>
+                {{ libro.ape_pat }}
+            </td>
+
+            <td>
+                {{ libro.ape_mat }}
+            </td>
+
+            <td class="estado-ok">
+               ENTREGADO
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+<table class="total">
+
+    <tr>
+
+        <td align="right">
+            TOTAL DE DOCUMENTOS
+        </td>
+
+        <td class="total-box">
+            {{ total }}
+        </td>
+
+    </tr>
+
+</table>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}
+CABB's de Atención
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+
+                <i class="bi bi-geo-alt-fill text-primary"></i>
+
+                CABB's de Atención
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Cobertura territorial y localidades atendidas
+
+            </p>
+
+        </div>
+
+        {% if request.user.is_staff %}
+
+        <a href="{% url 'registrar_cabb' %}"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Nuevo CABB
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+    <div class="row">
+
+        {% for cabb in cabbs %}
+
+        <div class="col-md-6 col-lg-4 mb-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                {% if cabb.foto %}
+
+                <img src="{{ cabb.foto.url }}"
+                     class="card-img-top"
+                     style="height: 220px; object-fit: cover;">
+
+                {% endif %}
+
+                <div class="card-body">
+
+                    <h4 class="fw-bold text-primary">
+
+                        {{ cabb.nombre }}
+
+                    </h4>
+
+                    <p class="text-muted mb-2">
+
+                        {{ cabb.clave }}
+
+                    </p>
+
+                    {% if cabb.responsable %}
+
+                    <p class="mb-2">
+
+                        <strong>Responsable:</strong>
+                        {{ cabb.responsable }}
+
+                    </p>
+
+                    {% endif %}
+
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+
+    <span class="badge bg-primary">
+
+        <i class="bi bi-geo-alt-fill"></i>
+
+        Localidades:
+        {{ cabb.total_localidades }}
+
+    </span>
+
+    <span class="badge bg-success">
+
+        <i class="bi bi-building"></i>
+
+        Escuelas:
+        {{ cabb.total_escuelas }}
+
+    </span>
+
+    <span class="badge bg-dark">
+
+        <i class="bi bi-map-fill"></i>
+
+        Municipios:
+        {{ cabb.total_municipios }}
+
+    </span>
+
+</div>
+
+                    {% if cabb.descripcion %}
+
+                    <p class="text-muted small">
+
+                        {{ cabb.descripcion }}
+
+                    </p>
+
+                    {% endif %}
+
+                    {% if request.user.is_staff %}
+
+<div class="d-flex gap-2 mb-3">
+
+    <a href="{% url 'editar_cabb' cabb.id %}"
+       class="btn btn-sm btn-warning">
+
+        <i class="bi bi-pencil-square"></i>
+
+        Editar
+
+    </a>
+
+</div>
+
+{% endif %}
+
+                    <hr>
+
+                    <h6 class="fw-bold">
+
+    Localidades atendidas
+
+</h6>
+
+<div style="max-height: 220px; overflow-y: auto;">
+
+    <ul class="list-group list-group-flush">
+
+        {% for localidad in cabb.localidades_detalle %}
+
+        <li class="list-group-item px-0">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <strong>
+                        {{ localidad.nombre }}
+                    </strong>
+
+                    <br>
+
+                    <small class="text-muted">
+                        {{ localidad.municipio }}
+                    </small>
+
+                </div>
+
+                <span class="badge bg-success">
+
+                    {{ localidad.total_escuelas }} escuelas
+
+                </span>
+
+            </div>
+
+        </li>
+
+        {% empty %}
+
+        <li class="list-group-item px-0 text-muted">
+
+            Sin localidades asignadas
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-info">
+
+                No hay CABB's registrados.
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

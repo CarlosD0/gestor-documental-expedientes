@@ -1,0 +1,424 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Expedientes{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+
+    <div>
+
+        <h2 class="fw-bold mb-1">
+            📂 Gestión de Expedientes
+        </h2>
+
+        <p class="text-muted mb-0">
+            Administración y control de entrega de tarjetas
+        </p>
+
+    </div>
+
+    {% if user.is_staff %}
+
+    <div class="d-grid d-lg-flex gap-2">
+
+        <div class="btn-group shadow-sm">
+
+            <a href="{% url 'exportar_libros_excel' %}"
+               class="btn btn-success">
+
+                <i class="bi bi-file-earmark-excel-fill"></i>
+                Excel
+
+            </a>
+
+            <a href="{% url 'importar_libros_excel' %}"
+               class="btn btn-outline-success bg-white text-success">
+
+                <i class="bi bi-cloud-upload-fill"></i>
+
+            </a>
+
+        </div>
+
+        <a href="{% url 'reporte_libros_pdf' %}"
+           class="btn btn-danger shadow-sm"
+           target="_blank">
+
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+            PDF
+
+        </a>
+
+        <a href="{% url 'registrar_libro' %}"
+           class="btn btn-primary shadow-sm">
+
+            <i class="bi bi-plus-circle"></i>
+            Nuevo Expediente
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- FILTROS -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
+
+            <a href="{% url 'lista_libros' %}"
+               class="btn btn-dark rounded-pill">
+
+                Todos
+
+            </a>
+
+            <a href="?estado=ENTREGADO"
+               class="btn btn-success rounded-pill">
+
+                <i class="bi bi-check-circle-fill"></i>
+                Entregados
+
+            </a>
+
+            <a href="?estado=PENDIENTE"
+               class="btn btn-warning rounded-pill text-dark">
+
+                <i class="bi bi-hourglass-split"></i>
+                Pendientes
+
+            </a>
+
+            {% for programa in programas %}
+
+<a href="?programa={{ programa.id }}"
+   class="btn btn-primary rounded-pill">
+
+    {{ programa.nombre }}
+
+</a>
+
+{% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- BUSCADOR -->
+
+<div class="card mb-4 border-0 shadow-sm bg-light">
+
+    <div class="card-body p-3">
+
+        <form method="get"
+              class="row g-2 align-items-center justify-content-center">
+
+            <div class="col-auto">
+
+                <i class="bi bi-search text-muted"></i>
+
+            </div>
+
+            <div class="col">
+
+                <input type="text"
+                       name="buscar"
+                       class="form-control border-0 bg-transparent"
+                       placeholder="Buscar por nombre, CURP, ID tarjeta, CCT, escuela, cupo o municipio..."
+                       value="{{ request.GET.buscar|default:'' }}">
+
+            </div>
+
+            <div class="col-auto">
+
+                <button type="submit"
+                        class="btn btn-dark rounded-pill px-4">
+
+                    Buscar
+
+                </button>
+
+            </div>
+
+            {% if request.GET.buscar %}
+
+            <div class="col-auto">
+
+                <a href="{% url 'lista_libros' %}"
+                   class="btn btn-outline-secondary rounded-pill">
+
+                    Limpiar
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- TABLA -->
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive rounded-3">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th class="text-center" style="width: 90px;">
+                            Evidencia
+                        </th>
+
+                        <th>Beneficiario</th>
+
+                        <th>CURP</th>
+
+                        <th>Programa</th>
+
+                        <th>Cupo</th>
+
+                        <th>Municipio</th>
+
+                        <th class="text-center">
+                            Estatus
+                        </th>
+
+                        <th class="text-end pe-4">
+                            Acciones
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for libro in page_obj %}
+
+                    <tr class="{% if not libro.activo %}table-secondary opacity-75{% endif %}">
+
+                        <!-- FOTO -->
+
+                        <td class="text-center">
+
+                            {% if libro.portada %}
+
+                                <img src="{{ libro.portada.url }}"
+                                     class="img-thumbnail shadow-sm"
+                                     style="height: 65px; width: 55px; object-fit: cover;">
+
+                            {% else %}
+
+                                <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded mx-auto"
+                                     style="height: 65px; width: 55px;">
+
+                                    <i class="bi bi-image"></i>
+
+                                </div>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- BENEFICIARIO -->
+
+                        <td>
+
+                            <a href="{% url 'detalle_libro' libro.id %}"
+                               class="text-decoration-none fw-bold text-primary">
+
+                                {{ libro.titulo }}
+
+                            </a>
+
+                        </td>
+
+                        <!-- CURP -->
+
+                        <td>
+
+                            <small>{{ libro.curp }}</small>
+
+                        </td>
+
+                        <!-- PROGRAMA -->
+
+                        <td>
+
+                            <span class="badge bg-primary">
+
+                              {{ libro.programa_beca.nombre|default:"Sin programa" }}
+
+                            </span>
+
+                        </td>
+
+                        <!-- CUPO -->
+
+                        <td>
+
+                            <strong>{{ libro.cupo }}</strong>
+
+                        </td>
+
+                        <!-- MUNICIPIO -->
+
+                        <td>
+
+                            {{ libro.municipio }}
+
+                        </td>
+
+                        <!-- ESTATUS -->
+
+<td class="text-center">
+
+    {% if libro.estatus == 'ENTREGADO' %}
+
+        <span class="badge bg-success px-3 py-2">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            Entregado
+
+        </span>
+
+    {% else %}
+
+        <span class="badge bg-warning text-dark px-3 py-2">
+
+            <i class="bi bi-hourglass-split"></i>
+
+            Pendiente
+
+        </span>
+
+    {% endif %}
+
+    {% if not libro.activo %}
+
+        <br>
+
+        <span class="badge bg-dark mt-1">
+
+            Inactivo
+
+        </span>
+
+    {% endif %}
+
+</td>
+
+                        
+                        <!-- BOTONES -->
+
+<td class="text-end pe-4">
+
+    <div class="btn-group btn-group-sm flex-wrap">
+
+        <!-- VER -->
+
+        <a href="{% url 'detalle_libro' libro.id %}"
+           class="btn btn-sm btn-outline-info"
+           title="Ver expediente">
+
+            <i class="bi bi-eye"></i>
+
+        </a>
+
+        <!-- EDITAR -->
+
+        <a href="{% url 'editar_libro' libro.id %}"
+           class="btn btn-sm btn-outline-primary"
+           title="Editar expediente">
+
+            <i class="bi bi-pencil-square"></i>
+
+        </a>
+
+        {% if user.is_staff %}
+
+        <!-- ACTIVAR -->
+
+        <a href="{% url 'activar_libro' libro.id %}"
+           class="btn btn-sm {% if libro.activo %}btn-outline-danger{% else %}btn-outline-success{% endif %}"
+           title="{% if libro.activo %}Desactivar{% else %}Activar{% endif %}">
+
+            {% if libro.activo %}
+
+                <i class="bi bi-toggle-on"></i>
+
+            {% else %}
+
+                <i class="bi bi-toggle-off"></i>
+
+            {% endif %}
+
+        </a>
+
+        <!-- ELIMINAR -->
+
+        <a href="{% url 'eliminar_libro' libro.id %}"
+           class="btn btn-sm btn-outline-dark"
+           title="Eliminar expediente"
+
+           onclick="return confirm(
+               '¿Seguro que deseas eliminar este expediente?'
+           )">
+
+            <i class="bi bi-trash-fill"></i>
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="8"
+                            class="text-center py-5 text-muted">
+
+                            No se encontraron expedientes.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

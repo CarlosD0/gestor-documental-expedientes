@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Estadísticas de Escuelas
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold">
+                <i class="bi bi-bar-chart-fill text-primary"></i>
+                Estadísticas de Escuelas
+            </h2>
+
+            <p class="text-muted mb-0">
+                Consulta escuelas por municipio y nivel educativo
+            </p>
+        </div>
+
+    </div>
+    <div class="row mb-4">
+
+    <div class="col-md-4 mb-3">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+    {% if municipio_seleccionado %}
+        Escuelas en {{ municipio_seleccionado.nombre }}
+    {% else %}
+        Total Escuelas
+    {% endif %}
+</h6>
+
+<h2 class="fw-bold text-primary">
+    {% if municipio_seleccionado %}
+        {{ total_seleccionado }}
+    {% else %}
+        {{ total_escuelas }}
+    {% endif %}
+</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-3">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+                    Municipios Registrados
+                </h6>
+
+                <h2 class="fw-bold text-success">
+                    {{ total_municipios }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-3">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+                    Municipio con más escuelas
+                </h6>
+
+                <h5 class="fw-bold text-dark">
+
+                    {{ municipio_mayor.municipio__nombre }}
+
+                </h5>
+
+                <span class="badge bg-primary">
+
+                    {{ municipio_mayor.total_escuelas }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- FILTRO -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="get">
+
+                <div class="row align-items-end">
+
+                    <div class="col-md-8">
+
+                        <label class="form-label fw-bold">
+                            Seleccionar municipio
+                        </label>
+
+                        <select name="municipio"
+                                class="form-select">
+
+                            <option value="">
+                                VER RESUMEN GENERAL
+                            </option>
+
+                            {% for municipio in municipios %}
+
+                            <option value="{{ municipio.id }}"
+                                    {% if municipio_id == municipio.id|stringformat:"s" %}
+                                    selected
+                                    {% endif %}>
+
+                                {{ municipio.clave }} - {{ municipio.nombre }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            Consultar
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+ {% if municipio_seleccionado %}
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-header bg-primary text-white">
+
+        <h5 class="mb-0">
+
+            <i class="bi bi-pie-chart-fill"></i>
+
+            Distribución por Nivel Educativo
+
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <div style="height: 400px;">
+
+            <canvas id="graficaNiveles"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+    {% else %}
+
+    <!-- RESUMEN GENERAL -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+                <i class="bi bi-building-fill"></i>
+                Total de Escuelas por Municipio
+            </h5>
+
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>Municipio</th>
+                        <th>Total Escuelas</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in totales_municipio %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.municipio__nombre }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-success">
+                                {{ item.total_escuelas }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="2"
+                            class="text-center text-muted py-4">
+                            No hay escuelas registradas.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% if municipio_seleccionado %}
+<script>
+const labelsNiveles = {{ labels_niveles|safe }};
+const dataNiveles = {{ data_niveles|safe }};
+
+new Chart(document.getElementById('graficaNiveles'), {
+    type: 'doughnut',
+    data: {
+        labels: labelsNiveles,
+        datasets: [{
+            data: dataNiveles
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+</script>
+{% endif %}
+
+
+
+
+{% endblock %}

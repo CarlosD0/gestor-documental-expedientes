@@ -1,0 +1,452 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-11">
+
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-folder-check"></i>
+                        {{ titulo }}
+                    </h4>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>Hay errores en el formulario:</strong>
+                            {{ form.errors }}
+                        </div>
+                        {% endif %}
+
+                        <h6 class="fw-bold text-primary mb-3">
+                            <i class="bi bi-person-fill"></i>
+                            Datos del Beneficiario
+                        </h6>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Nombre(s)</label>
+                                {{ form.nombre }}
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Apellido Paterno</label>
+                                {{ form.apellido_paterno }}
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Apellido Materno</label>
+                                {{ form.apellido_materno }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">CURP</label>
+                                {{ form.curp }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">ID de Tarjeta</label>
+                                {{ form.id_tarjeta }}
+                            </div>
+
+                            <div class="col-md-6">
+    <label class="form-label fw-bold">
+        Número de Tarjeta Bancaria
+    </label>
+    {{ form.numero_tarjeta_bancaria }}
+</div>
+
+                        </div>
+
+                        <hr>
+
+                        <h6 class="fw-bold text-primary mb-3">
+                            <i class="bi bi-mortarboard-fill"></i>
+                            Información Escolar
+                        </h6>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Programa / Beca</label>
+                                {{ form.programa_beca }}
+                            </div>
+
+                            <div class="col-md-12">
+
+    <label class="form-label fw-bold">
+        Escuela / CCT Registrada
+    </label>
+
+       <select id="escuelaSelect"
+        class="form-select mb-2">
+
+    <option value="">
+        PRIMERO SELECCIONA LOCALIDAD
+    </option>
+
+</select>
+
+{{ form.escuela }}
+
+    <small class="text-muted">
+        Selecciona una escuela registrada para llenar automáticamente CCT y nombre.
+    </small>
+
+</div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Cupo</label>
+                                {{ form.cupo }}
+                                <small class="text-muted">
+                                    Al colocar el cupo se asignará automáticamente el responsable.
+                                </small>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">CCT de Escuela</label>
+                                {{ form.cct_escuela }}
+                            </div>
+
+                            
+
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Nombre de Escuela</label>
+                                {{ form.nombre_escuela }}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h6 class="fw-bold text-primary mb-3">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Ubicación
+                        </h6>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                  Municipio
+                                </label>
+
+                                <select id="municipioSelect"
+                                    class="form-select">
+
+                                   <option value="">
+                                     SELECCIONA MUNICIPIO
+                                   </option>
+
+                                   {% for municipio in municipios %}
+
+                                   <option value="{{ municipio.id }}">
+                                      {{ municipio.clave }} - {{ municipio.nombre }}
+                                  </option>
+
+                                 {% endfor %}
+
+                                </select>
+
+                                 {{ form.municipio }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+    Localidad
+</label>
+
+<select id="localidadSelect"
+        class="form-select mb-2">
+
+    <option value="">
+        PRIMERO SELECCIONA MUNICIPIO
+    </option>
+
+</select>
+
+{{ form.localidad }}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h6 class="fw-bold text-primary mb-3">
+                            <i class="bi bi-calendar-check-fill"></i>
+                            Detalles de Entrega
+                        </h6>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Periodo de Entrega</label>
+                                {{ form.periodo_entrega }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Fecha de Entrega</label>
+                                {{ form.fecha_entrega }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    Evidencia / Captura de Entrega
+                                </label>
+                                {{ form.portada }}
+                                <small class="text-muted">
+                                    Cuando exista cupo + fecha + evidencia, el expediente se marcará automáticamente como ENTREGADO.
+                                </small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Observaciones</label>
+                                {{ form.descripcion }}
+                            </div>
+                        </div>
+
+                        <div class="card bg-light border-0 mb-4">
+                            <div class="card-body">
+                                <div class="form-check form-switch">
+                                    {{ form.activo }}
+                                    <label class="form-check-label fw-bold text-primary">
+                                        Expediente Activo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'lista_libros' %}"
+                               class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success">
+                                <i class="bi bi-save"></i>
+                                Guardar Expediente
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const municipioSelect =
+    document.getElementById('municipioSelect');
+
+    const localidadSelect =
+    document.getElementById('localidadSelect');
+
+    const escuelaSelect =
+    document.getElementById('escuelaSelect');
+
+    const escuelaHidden =
+    document.getElementById('id_escuela');
+
+    const cctInput =
+    document.getElementById('id_cct_escuela');
+
+    const nombreEscuelaInput =
+    document.getElementById('id_nombre_escuela');
+
+    const municipioInput =
+    document.getElementById('id_municipio');
+
+    const localidadInput =
+    document.getElementById('id_localidad');
+    const escuelaActualId = "{{ libro.escuela.id|default:'' }}";
+    const municipioActual = "{{ libro.municipio|default:'' }}";
+    const localidadActual = "{{ libro.localidad|default:'' }}";
+
+      // PRECARGAR DATOS AL EDITAR
+    if (municipioActual) {
+
+         for (let option of municipioSelect.options) {
+             if (option.textContent.includes(municipioActual)) {
+                 option.selected = true;
+                 municipioSelect.dispatchEvent(new Event('change'));
+                 break;
+             }
+        }
+
+    }
+     
+        // ESPERAR Y SELECCIONAR LOCALIDAD + ESCUELA
+    setTimeout(() => {
+
+        if (localidadActual) {
+
+            for (let option of localidadSelect.options) {
+
+               if (option.textContent.includes(localidadActual)) {
+
+                   option.selected = true;
+
+                    localidadSelect.dispatchEvent(
+                      new Event('change')
+                    );
+
+                    break;
+                }
+
+            }
+  
+        }
+
+        setTimeout(() => {
+
+            if (escuelaActualId) {
+
+                escuelaSelect.value = escuelaActualId;
+
+                escuelaSelect.dispatchEvent(
+                   new Event('change')
+                );
+
+            }
+
+        }, 800);
+
+    }, 800);
+
+
+
+    // MUNICIPIOS -> LOCALIDADES
+    municipioSelect.addEventListener('change', function () {
+
+        const municipioId = this.value;
+
+        localidadSelect.innerHTML = '';
+
+        escuelaSelect.innerHTML =
+        '<option value="">PRIMERO SELECCIONA LOCALIDAD</option>';
+
+        if (!municipioId) {
+
+            localidadSelect.innerHTML =
+            '<option value="">PRIMERO SELECCIONA MUNICIPIO</option>';
+
+            return;
+        }
+
+        localidadSelect.innerHTML =
+        '<option value="">Cargando localidades...</option>';
+
+        fetch(`/localidades/por-municipio/${municipioId}/`)
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                localidadSelect.innerHTML =
+                '<option value="">SELECCIONA LOCALIDAD</option>';
+
+                data.forEach(function (localidad) {
+
+                    const option =
+                    document.createElement('option');
+
+                    option.value = localidad.id;
+                    option.textContent = localidad.nombre;
+
+                    localidadSelect.appendChild(option);
+
+                });
+
+            });
+
+    });
+
+    // LOCALIDADES -> ESCUELAS
+    localidadSelect.addEventListener('change', function () {
+
+        const localidadId = this.value;
+
+        escuelaSelect.innerHTML = '';
+
+        if (!localidadId) {
+
+            escuelaSelect.innerHTML =
+            '<option value="">PRIMERO SELECCIONA LOCALIDAD</option>';
+
+            return;
+        }
+
+        escuelaSelect.innerHTML =
+        '<option value="">Cargando escuelas...</option>';
+
+        fetch(`/escuelas/por-localidad/${localidadId}/`)
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                escuelaSelect.innerHTML =
+                '<option value="">SELECCIONA ESCUELA</option>';
+
+                data.forEach(function (escuela) {
+
+                    const option =
+                    document.createElement('option');
+
+                    option.value = escuela.id;
+                    option.textContent = escuela.nombre;
+
+                    escuelaSelect.appendChild(option);
+
+                });
+
+            });
+
+    });
+
+    // ESCUELA -> AUTOCOMPLETAR
+    escuelaSelect.addEventListener('change', function () {
+
+        const escuelaId = this.value;
+
+        escuelaHidden.value = escuelaId;
+
+        if (!escuelaId) {
+            return;
+        }
+
+        fetch(`/escuelas/detalle/${escuelaId}/`)
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                cctInput.value = data.cct;
+
+                nombreEscuelaInput.value =
+                data.nombre;
+
+                municipioInput.value =
+                data.municipio;
+
+                localidadInput.value =
+                data.localidad;
+
+            });
+
+    });
+
+});
+</script>
+
+{% endblock %}

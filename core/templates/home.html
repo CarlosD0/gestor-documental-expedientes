@@ -4,141 +4,771 @@
 
 {% block content %}
 
-{% if es_admin %}
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="fw-bold text-dark">Panel de Control</h2>
-            <p class="text-muted">Resumen general y estadísticas del sistema</p>
-        </div>
+<div class="row mb-4">
+
+    <div class="col-md-8">
+
+        <h2 class="fw-bold text-dark mb-1">
+            📊 Panel de Control
+        </h2>
+
+        <p class="text-muted mb-0">
+            Resumen general del control de expedientes y entrega de tarjetas
+        </p>
+
     </div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary shadow-sm h-100">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div><h6 class="card-title mb-0">Total Libros</h6><h2 class="my-2 display-6 fw-bold">{{ total_libros }}</h2></div>
-                    <i class="bi bi-book-half fs-1 opacity-50"></i>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+        {% if user.is_staff %}
+
+        <a href="{% url 'registrar_libro' %}"
+           class="btn btn-primary shadow-sm">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Nuevo Expediente
+
+        </a>
+
+        {% endif %}
+
+        <a href="{% url 'lista_libros' %}"
+           class="btn btn-outline-secondary shadow-sm">
+
+            <i class="bi bi-search"></i>
+
+            Consultar
+
+        </a>
+
+    </div>
+
+</div>
+<!-- FILTRO DE PERIODOS -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <form method="get">
+
+            <div class="row align-items-end">
+
+                <div class="col-md-6">
+
+                    <label class="form-label fw-bold">
+
+                        Periodo de entrega
+
+                    </label>
+
+                    <select name="periodo"
+                            class="form-select"
+                            onchange="this.form.submit()">
+
+                        <option value="">
+
+                            TODOS LOS PERIODOS
+
+                        </option>
+
+                        {% for periodo in periodos %}
+
+                        <option value="{{ periodo }}"
+                                {% if periodo == periodo_seleccionado %}
+                                selected
+                                {% endif %}>
+
+                            {{ periodo }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info shadow-sm h-100">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div><h6 class="card-title mb-0">Lectores</h6><h2 class="my-2 display-6 fw-bold">{{ total_lectores }}</h2></div>
-                    <i class="bi bi-people-fill fs-1 opacity-50"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success shadow-sm h-100">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div><h6 class="card-title mb-0">En Préstamo</h6><h2 class="my-2 display-6 fw-bold">{{ total_prestamos }}</h2></div>
-                    <i class="bi bi-journal-arrow-up fs-1 opacity-50"></i>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-3">
-            <a href="{% url 'lista_morosos' %}" class="text-decoration-none">
-                <div class="card text-white bg-danger shadow h-100 position-relative overflow-hidden">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div><h6 class="card-title mb-0">Vencidos / Mora</h6><h2 class="my-2 display-6 fw-bold">{{ total_vencidos }}</h2></div>
-                        <i class="bi bi-exclamation-triangle-fill fs-1 opacity-50"></i>
+
+                <div class="col-md-6">
+
+                    <div class="alert alert-primary mb-0">
+
+                        <strong>Periodo actual:</strong>
+
+                        {% if periodo_seleccionado %}
+
+                            {{ periodo_seleccionado }}
+
+                        {% else %}
+
+                            TODOS LOS PERIODOS
+
+                        {% endif %}
+
                     </div>
-                    <div class="card-footer bg-danger border-top-0 text-center py-1" style="background-color: rgba(0,0,0,0.1) !important;">
-                        <small>Ver detalles <i class="bi bi-arrow-right"></i></small>
-                    </div>
+
                 </div>
-            </a>
-        </div>
+
+            </div>
+
+        </form>
+
     </div>
 
-    <div class="row mb-5">
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-0 py-3"><h5 class="mb-0 fw-bold">📚 Distribución por Categorías</h5></div>
-                <div class="card-body"><canvas id="chartCategorias" style="max-height: 300px;"></canvas></div>
+</div>
+
+<!-- TARJETAS PRINCIPALES -->
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+
+        <div class="card border-0 shadow-lg rounded-4 h-100 bg-primary text-white">
+
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="mb-1 small text-white-50">
+                        Total Expedientes
+                    </p>
+
+                    <h2 class="fw-bold mb-0">
+                        {{ total_expedientes }}
+                    </h2>
+
+                </div>
+
+                <i class="bi bi-folder-fill fs-1 opacity-50"></i>
+
             </div>
+
         </div>
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-0 py-3"><h5 class="mb-0 fw-bold">📊 Rendimiento de Préstamos</h5></div>
-                <div class="card-body"><canvas id="chartPrestamos" style="max-height: 300px;"></canvas></div>
-            </div>
-        </div>
+
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card card-custom shadow-sm">
-                <div class="card-header bg-white border-0 py-3"><h5 class="mb-0 fw-bold">Últimos Libros</h5></div>
-                <div class="card-body p-0">
-                    <table class="table table-hover mb-0 align-middle">
-                        <thead class="table-light"><tr><th>Título</th><th>Autor</th><th class="text-center">Stock</th></tr></thead>
-                        <tbody>
-                            {% for libro in libros_recientes %}
+    <div class="col-md-3">
+
+        <div class="card border-0 shadow-sm h-100 bg-success text-white">
+
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="mb-1 small text-white-50">
+                        Entregados
+                    </p>
+
+                    <h2 class="fw-bold mb-0">
+                        {{ total_entregados }}
+                    </h2>
+
+                </div>
+
+                <i class="bi bi-check-circle-fill fs-1 opacity-50"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card border-0 shadow-sm h-100 bg-warning text-dark">
+
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="mb-1 small text-dark opacity-75">
+                        Pendientes
+                    </p>
+
+                    <h2 class="fw-bold mb-0">
+                        {{ total_pendientes }}
+                    </h2>
+
+                </div>
+
+                <i class="bi bi-hourglass-split fs-1 opacity-50"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card border-0 shadow-sm h-100 bg-dark text-white">
+
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="mb-1 small text-white-50">
+                        Avance General
+                    </p>
+
+                    <h2 class="fw-bold mb-0">
+
+                        <span id="porcentajeAvance">
+                            0%
+                        </span>
+
+                    </h2>
+
+                </div>
+
+                <i class="bi bi-graph-up-arrow fs-1 opacity-50"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- PROGRESO -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+
+            <h5 class="fw-bold mb-0">
+                Progreso de Entregas
+            </h5>
+
+            <span class="badge bg-primary"
+                  id="badgeAvance">
+
+                0%
+
+            </span>
+
+        </div>
+
+        <div class="progress"
+             style="height: 18px;">
+
+            <div id="barraAvance"
+                 class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                 role="progressbar"
+                 style="width: 0%;">
+
+            </div>
+
+        </div>
+
+        <p class="text-muted small mt-2 mb-0">
+
+            Calculado con base en expedientes entregados contra el total registrado.
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- PROGRAMAS -->
+
+<!-- GRÁFICAS -->
+
+<div class="row g-4 mb-4">
+<div class="row g-4 mb-4">
+
+    {% for programa in programas_resumen %}
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body text-center">
+
+                <div class="mb-2">
+
+                    <i class="bi bi-award-fill text-primary fs-2"></i>
+
+                </div>
+
+                <h6 class="fw-bold">
+                    {{ programa.programa_beca__nombre|default:"Sin programa" }}
+                </h6>
+
+                <h2 class="text-primary fw-bold">
+                    {{ programa.total }}
+                </h2>
+
+                <p class="text-muted mb-0 small">
+                    Expedientes registrados
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="col-12">
+
+        <div class="alert alert-info">
+
+            No hay programas registrados en este periodo.
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+    <!-- ESTATUS -->
+
+    <div class="col-lg-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-header bg-white border-0">
+
+                <h5 class="fw-bold mb-0">
+
+                    <i class="bi bi-pie-chart-fill text-primary"></i>
+
+                    Entregados vs Pendientes
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div style="height:300px;">
+    <canvas id="graficaEstatus"></canvas>
+</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PROGRAMAS -->
+
+    <div class="col-lg-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-header bg-white border-0">
+
+                <h5 class="fw-bold mb-0">
+
+                    <i class="bi bi-bar-chart-fill text-success"></i>
+
+                    Expedientes por Programa
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div style="height:300px;">
+    <canvas id="graficaProgramas"></canvas>
+</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MUNICIPIOS -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-header bg-white border-0">
+
+        <h5 class="fw-bold mb-0">
+
+            <i class="bi bi-geo-alt-fill text-danger"></i>
+
+            Top Municipios con Más Expedientes
+
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <div style="height:260px;">
+    <canvas id="graficaMunicipios"></canvas>
+</div>
+
+    </div>
+
+</div>
+
+
+
+<!-- TABLA Y ACCESOS -->
+
+<div class="row g-4">
+
+    <div class="col-md-8">
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0 fw-bold">
+                    Últimos Expedientes Registrados
+                </h5>
+
+                <a href="{% url 'lista_libros' %}"
+                   class="btn btn-sm btn-outline-primary">
+
+                    Ver todos
+
+                </a>
+
+            </div>
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive rounded-3">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+
                             <tr>
-                                <td class="fw-bold">{{ libro.titulo }}</td><td>{{ libro.autor }}</td>
-                                <td class="text-center"><span class="badge bg-secondary">{{ libro.stock }}</span></td>
+
+                                <th>Beneficiario</th>
+                                <th>CURP</th>
+                                <th>Programa</th>
+                                <th class="text-center">Estatus</th>
+
                             </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for expediente in expedientes_recientes %}
+
+                            <tr>
+
+                                <td class="fw-bold">
+
+                                    <a href="{% url 'detalle_libro' expediente.id %}"
+                                       class="text-decoration-none">
+
+                                        {{ expediente.titulo }}
+
+                                    </a>
+
+                                </td>
+
+                                <td>
+
+                                    <small>{{ expediente.curp }}</small>
+
+                                </td>
+
+                                <td>
+
+                                    {{ expediente.programa_beca.nombre|default:"Sin programa" }}
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    {% if expediente.estatus == 'ENTREGADO' %}
+
+                                        <span class="badge bg-success">
+                                            Entregado
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            Pendiente
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="4"
+                                    class="text-center text-muted py-4">
+
+                                    Aún no hay expedientes registrados.
+
+                                </td>
+
+                            </tr>
+
                             {% endfor %}
+
                         </tbody>
+
                     </table>
+
                 </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card card-custom shadow-sm mb-4">
-                <div class="card-header bg-white border-0 py-3"><h5 class="mb-0 fw-bold">Accesos</h5></div>
-                <div class="card-body">
-                    <div class="d-grid gap-3">
-                        <a href="{% url 'registrar_prestamo' %}" class="btn btn-outline-primary text-start p-3 shadow-sm"><i class="bi bi-plus-circle-fill me-2"></i> Nuevo Préstamo</a>
-                        <a href="{% url 'registrar_libro' %}" class="btn btn-outline-secondary text-start p-3 shadow-sm"><i class="bi bi-book me-2"></i> Registrar Libro</a>
-                        <a href="{% url 'registrar_lector' %}" class="btn btn-outline-info text-start p-3 shadow-sm"><i class="bi bi-person-plus-fill me-2"></i> Nuevo Lector</a>
-                    </div>
-                </div>
+
             </div>
 
-            <div class="card card-custom shadow-sm border-warning">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold text-dark">Administración</h5>
-                    <p class="small text-muted">Configura costos, días y datos de la empresa.</p>
-                    <a href="{% url 'ajustes_sistema' %}" class="btn btn-warning w-100 fw-bold text-dark">
-                        <i class="bi bi-gear-fill"></i> Ajustes Generales
+        </div>
+
+    </div>
+
+    <!-- ACCESOS -->
+
+    <div class="col-md-4">
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-header bg-white border-0 py-3">
+
+                <h5 class="mb-0 fw-bold">
+                    Accesos rápidos
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="d-grid gap-3">
+
+                    {% if user.is_staff %}
+
+                    <a href="{% url 'registrar_libro' %}"
+                       class="btn btn-outline-primary text-start p-3 shadow-sm">
+
+                        <i class="bi bi-folder-plus me-2"></i>
+
+                        Nuevo Expediente
+
                     </a>
+
+                    {% endif %}
+
+                    <a href="{% url 'lista_libros' %}"
+                       class="btn btn-outline-secondary text-start p-3 shadow-sm">
+
+                        <i class="bi bi-search me-2"></i>
+
+                        Consultar Expedientes
+
+                    </a>
+
+                    <a href="{% url 'caratulas' %}"
+                       class="btn btn-outline-danger text-start p-3 shadow-sm">
+
+                        <i class="bi bi-file-earmark-pdf-fill me-2"></i>
+
+                        Generar Carátulas
+
+                    </a>
+
+                    {% if user.is_staff %}
+
+                    <a href="{% url 'importar_libros_excel' %}"
+                       class="btn btn-outline-success text-start p-3 shadow-sm">
+
+                        <i class="bi bi-cloud-upload-fill me-2"></i>
+
+                        Importar Excel
+
+                    </a>
+
+                    <a href="{% url 'exportar_libros_excel' %}"
+                       class="btn btn-outline-success text-start p-3 shadow-sm">
+
+                        <i class="bi bi-file-earmark-excel-fill me-2"></i>
+
+                        Exportar Excel
+
+                    </a>
+
+                    {% endif %}
+
                 </div>
+
             </div>
+
         </div>
+
+        {% if user.is_staff %}
+
+        <div class="card border-warning shadow-sm">
+
+            <div class="card-body text-center">
+
+                <i class="bi bi-gear-fill fs-2 text-warning"></i>
+
+                <h5 class="card-title fw-bold text-dark mt-2">
+
+                    Administración
+
+                </h5>
+
+                <p class="small text-muted">
+
+                    Configura datos generales del sistema.
+
+                </p>
+
+                <a href="{% url 'ajustes_sistema' %}"
+                   class="btn btn-warning w-100 fw-bold text-dark">
+
+                    Ajustes Generales
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctxCat = document.getElementById('chartCategorias').getContext('2d');
-        new Chart(ctxCat, {
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    const totalExpedientes =
+        Number("{{ total_expedientes|default:0 }}");
+
+    const totalEntregados =
+        Number("{{ total_entregados|default:0 }}");
+
+    const totalPendientes =
+        Number("{{ total_pendientes|default:0 }}");
+
+    const porcentaje =
+        totalExpedientes > 0
+        ? Math.round(
+            (totalEntregados / totalExpedientes) * 100
+        )
+        : 0;
+
+    document.getElementById(
+        'porcentajeAvance'
+    ).innerText = porcentaje + '%';
+
+    document.getElementById(
+        'badgeAvance'
+    ).innerText = porcentaje + '%';
+
+    document.getElementById(
+        'barraAvance'
+    ).style.width = porcentaje + '%';
+
+    // GRÁFICA ESTATUS
+
+    new Chart(
+        document.getElementById('graficaEstatus'),
+        {
             type: 'doughnut',
-            data: {
-                labels: {{ cat_labels|safe }},
-                datasets: [{ data: {{ cat_data|safe }}, backgroundColor: ['#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545', '#fd7e14', '#ffc107', '#198754'], borderWidth: 1 }]
-            }, options: { responsive: true, maintainAspectRatio: false }
-        });
-        const ctxPre = document.getElementById('chartPrestamos').getContext('2d');
-        new Chart(ctxPre, {
-            type: 'bar',
-            data: {
-                labels: ['Al Día', 'Vencidos/Mora', 'Histórico Devueltos'],
-                datasets: [{ label: 'Cantidad', data: {{ prestamos_data|safe }}, backgroundColor: ['#198754', '#dc3545', '#0dcaf0'], borderWidth: 1 }]
-            }, options: { plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
-        });
-    </script>
 
-{% else %}
-    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
-        <div class="container-fluid py-3">
-            <h1 class="display-5 fw-bold text-primary">¡Bienvenido, {{ user.first_name }}!</h1>
-            <p class="col-md-8 fs-4 mx-auto text-muted">Explora nuestro catálogo.</p>
-            <a href="{% url 'lista_libros' %}" class="btn btn-primary btn-lg px-5 mt-3 rounded-pill shadow">Explorar</a>
-        </div>
-    </div>
-    {% endif %}
+            data: {
+                labels: [
+                    'Entregados',
+                    'Pendientes'
+                ],
+
+                datasets: [{
+                    data: [
+                        totalEntregados,
+                        totalPendientes
+                    ]
+                }]
+            },
+
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        }
+    );
+
+    // GRÁFICA PROGRAMAS
+
+    new Chart(
+        document.getElementById('graficaProgramas'),
+        {
+            type: 'bar',
+
+            data: {
+                labels: {{ labels_programas|safe }},
+
+                datasets: [{
+                    label: 'Expedientes',
+                    data: {{ data_programas|safe }}
+                }]
+            },
+
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        }
+    );
+
+    // GRÁFICA MUNICIPIOS
+
+    new Chart(
+        document.getElementById('graficaMunicipios'),
+        {
+            type: 'bar',
+
+            data: {
+                labels: {{ labels_municipios|safe }},
+
+                datasets: [{
+                    label: 'Expedientes',
+                    data: {{ data_municipios|safe }}
+                }]
+            },
+
+            options: {
+                responsive: true,
+                indexAxis: 'y'
+            }
+        }
+    );
+
+</script>
+
 {% endblock %}

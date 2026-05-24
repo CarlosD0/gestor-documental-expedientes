@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Expedientes</title>
+
+    <style>
+        @page {
+            size: landscape;
+            margin: 1cm;
+        }
+
+        body {
+            font-family: Helvetica, sans-serif;
+            font-size: 10px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0d6efd;
+            margin-bottom: 5px;
+        }
+
+        .header-info {
+            text-align: center;
+            font-size: 10px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .pendiente {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .entregado {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Reporte General de Expedientes</h1>
+
+    <div class="header-info">
+        Generado el: {{ fecha|date:"d/m/Y H:i" }}
+        | Sistema de Gestión Documental
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>CURP</th>
+                <th>Beneficiario</th>
+                <th>Programa</th>
+                <th>Municipio</th>
+                <th>Localidad</th>
+                <th>Cupo</th>
+                <th>Periodo</th>
+                <th>Fecha Entrega</th>
+                <th>Estatus</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for libro in libros %}
+            <tr>
+
+                <td>{{ libro.curp }}</td>
+
+                <td>{{ libro.titulo }}</td>
+
+                <td>{{ libro.programa_beca.nombre|default:"Sin programa" }}</td>
+
+                <td>{{ libro.municipio }}</td>
+
+                <td>{{ libro.localidad }}</td>
+
+                <td>{{ libro.cupo }}</td>
+
+                <td>{{ libro.periodo_entrega }}</td>
+
+                <td>
+                    {% if libro.fecha_entrega %}
+                        {{ libro.fecha_entrega }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if libro.estatus == 'ENTREGADO' %}
+                        <span class="entregado">
+                            ENTREGADO
+                        </span>
+                    {% else %}
+                        <span class="pendiente">
+                            PENDIENTE
+                        </span>
+                    {% endif %}
+                </td>
+
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <div class="footer">
+        Documento generado automáticamente por el Sistema de Gestión Documental.
+    </div>
+
+</body>
+</html>

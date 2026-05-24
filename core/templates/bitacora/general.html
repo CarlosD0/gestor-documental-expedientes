@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Bitácora General
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold mb-1">
+
+            <i class="bi bi-clock-history text-primary"></i>
+
+            Bitácora General
+
+        </h2>
+
+        <p class="text-muted mb-0">
+
+            Historial de movimientos realizados en el sistema
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive rounded-3">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Usuario</th>
+
+                        <th>Acción</th>
+
+                        <th>Expediente</th>
+
+                        <th>Descripción</th>
+
+                        <th>Fecha</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for movimiento in movimientos %}
+
+                    <tr>
+
+                        <td>
+
+                            <span class="fw-bold">
+
+                                {{ movimiento.usuario.username|default:"Sistema" }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {% if movimiento.accion == 'CREAR' %}
+
+                                <span class="badge bg-primary">
+
+                                    Crear
+
+                                </span>
+
+                            {% elif movimiento.accion == 'EDITAR' %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Editar
+
+                                </span>
+
+                            {% elif movimiento.accion == 'ENTREGAR' %}
+
+                                <span class="badge bg-success">
+
+                                    Entregar
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+
+                                    {{ movimiento.get_accion_display }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if movimiento.libro %}
+
+                                <a href="{% url 'detalle_libro' movimiento.libro.id %}"
+                                   class="text-decoration-none fw-bold">
+
+                                    {{ movimiento.libro.titulo }}
+
+                                </a>
+
+                            {% else %}
+
+                                <span class="text-muted">
+
+                                    Sin expediente
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {{ movimiento.descripcion }}
+
+                        </td>
+
+                        <td>
+
+                            <small class="text-muted">
+
+                                {{ movimiento.fecha|date:"d/m/Y H:i" }}
+
+                            </small>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="5"
+                            class="text-center py-5 text-muted">
+
+                            No hay movimientos registrados.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

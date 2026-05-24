@@ -1,0 +1,458 @@
+{% extends 'base.html' %}
+
+{% block title %}Expediente: {{ libro.titulo }}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+    <!-- EVIDENCIA -->
+    <div class="col-md-4 mb-4">
+
+        <div class="card shadow border-0">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-image"></i>
+                    Evidencia de Entrega
+
+                </h5>
+
+            </div>
+
+            <div class="card-body text-center p-4 bg-light">
+
+                {% if libro.portada %}
+
+                    <img src="{{ libro.portada.url }}"
+                         class="img-fluid rounded shadow-sm"
+                         style="max-height: 500px; object-fit: cover;">
+
+                {% else %}
+
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded shadow-sm mx-auto"
+                         style="height: 350px; width: 250px;">
+
+                        <i class="bi bi-image display-1"></i>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- INFORMACIÓN -->
+    <div class="col-md-8">
+
+        <h2 class="display-6 fw-bold mb-2">
+
+            {{ libro.titulo }}
+
+        </h2>
+
+        <p class="text-muted fs-5 mb-4">
+
+            <i class="bi bi-person-vcard"></i>
+
+            CURP:
+            <strong>{{ libro.curp }}</strong>
+
+        </p>
+
+        <!-- ESTADOS -->
+        <div class="mb-4 d-flex flex-wrap gap-2">
+
+            {% if libro.estatus == 'ENTREGADO' %}
+
+                <span class="badge bg-success fs-6 px-3 py-2">
+
+                    <i class="bi bi-check-circle-fill"></i>
+                    Entregado
+
+                </span>
+
+            {% else %}
+
+                <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+
+                    <i class="bi bi-hourglass-split"></i>
+                    Pendiente
+
+                </span>
+
+            {% endif %}
+
+            {% if libro.activo %}
+
+                <span class="badge bg-primary fs-6 px-3 py-2">
+
+                    <i class="bi bi-folder-check"></i>
+                    Expediente Activo
+
+                </span>
+
+            {% else %}
+
+                <span class="badge bg-danger fs-6 px-3 py-2">
+
+                    <i class="bi bi-folder-x"></i>
+                    Expediente Inactivo
+
+                </span>
+
+            {% endif %}
+
+        </div>
+
+        <!-- INFORMACIÓN GENERAL -->
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-body">
+
+                <h5 class="fw-bold mb-4">
+
+                    <i class="bi bi-folder2-open"></i>
+                    Información del Expediente
+
+                </h5>
+
+                <div class="row g-4">
+
+                    <!-- ID TARJETA -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            ID de Tarjeta
+                        </small>
+
+                        <p class="mb-0">
+
+                            {% if libro.id_tarjeta %}
+                                {{ libro.id_tarjeta }}
+                            {% else %}
+                                Sin ID registrado
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                    <tr>
+    <th>Número Tarjeta Bancaria</th>
+    <td>
+        {{ libro.numero_tarjeta_bancaria|default:"No registrado" }}
+    </td>
+</tr>
+
+                    <!-- PROGRAMA -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            Programa
+                        </small>
+
+                        <p class="mb-0">
+                            {{ libro.programa_beca.nombre|default:"Sin programa" }}
+                        </p>
+
+                    </div>
+
+                    <!-- RESPONSABLE -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            Responsable
+                        </small>
+
+                        <p class="mb-0">
+
+                            {% if libro.autor %}
+                                {{ libro.autor.nombre }}
+                            {% else %}
+                                Sin responsable asignado
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                    <!-- CUPO -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            Cupo
+                        </small>
+
+                        <p class="mb-0">
+                            {{ libro.cupo }}
+                        </p>
+
+                    </div>
+
+                    <!-- CCT -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            CCT de Escuela
+                        </small>
+
+                        <p class="mb-0">
+
+                            {% if libro.cct_escuela %}
+                                {{ libro.cct_escuela }}
+                            {% else %}
+                                Sin CCT registrado
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                    <!-- ESCUELA -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            Nombre de Escuela
+                        </small>
+
+                        <p class="mb-0">
+
+                            {% if libro.nombre_escuela %}
+                                {{ libro.nombre_escuela }}
+                            {% else %}
+                                Sin escuela registrada
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                    <!-- MUNICIPIO -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            Municipio
+                        </small>
+
+                        <p class="mb-0">
+                            {{ libro.municipio }}
+                        </p>
+
+                    </div>
+
+                    <!-- LOCALIDAD -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            Localidad
+                        </small>
+
+                        <p class="mb-0">
+                            {{ libro.localidad }}
+                        </p>
+
+                    </div>
+
+                    <!-- PERIODO -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            Periodo de Entrega
+                        </small>
+
+                        <p class="mb-0">
+
+                            {% if libro.periodo_entrega %}
+                                {{ libro.periodo_entrega }}
+                            {% else %}
+                                Sin periodo registrado
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                    <!-- FECHA -->
+                    <div class="col-md-6">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            Fecha de Entrega
+                        </small>
+
+                        <p class="mb-0">
+
+                            {% if libro.fecha_entrega %}
+                                {{ libro.fecha_entrega|date:"d/m/Y" }}
+                            {% else %}
+                                Pendiente
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                    <!-- OBSERVACIONES -->
+                    <div class="col-md-12">
+
+                        <small class="text-muted text-uppercase fw-bold">
+                            Observaciones
+                        </small>
+
+                        <div class="bg-light rounded p-3 mt-2">
+
+                            {% if libro.descripcion %}
+                                {{ libro.descripcion }}
+                            {% else %}
+                                Sin observaciones registradas.
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+<div class="card border-0 shadow-sm mt-4">
+
+    <div class="card-header bg-white">
+
+        <h5 class="fw-bold mb-0">
+
+            <i class="bi bi-clock-history text-primary"></i>
+
+            Historial del Expediente
+
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        {% if movimientos %}
+
+            <div class="timeline">
+
+                {% for movimiento in movimientos %}
+
+                <div class="border-start border-3 border-primary ps-3 mb-4">
+
+                    <div class="d-flex justify-content-between flex-wrap">
+
+                        <h6 class="fw-bold mb-1">
+
+                            {{ movimiento.get_accion_display }}
+
+                        </h6>
+
+                        <small class="text-muted">
+
+                            {{ movimiento.fecha|date:"d/m/Y H:i" }}
+
+                        </small>
+
+                    </div>
+
+                    <p class="mb-1">
+
+                        {{ movimiento.descripcion }}
+
+                    </p>
+
+                    <small class="text-muted">
+
+                        Usuario:
+                        {{ movimiento.usuario.username|default:"Sistema" }}
+
+                    </small>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-light border">
+
+                No hay movimientos registrados para este expediente.
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
+        <!-- BOTONES -->
+        <div class="d-flex gap-2 flex-wrap">
+
+            <a href="{% url 'lista_libros' %}"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+                Volver
+
+            </a>
+
+            {% if user.is_staff %}
+
+                {% if libro.estatus != 'ENTREGADO' %}
+
+                <a href="{% url 'marcar_entregado' libro.id %}"
+                   class="btn btn-success">
+
+                    <i class="bi bi-check-circle-fill"></i>
+                    Marcar Entregado
+
+                </a>
+
+                {% endif %}
+
+                <a href="{% url 'editar_libro' libro.id %}"
+                   class="btn btn-primary">
+
+                    <i class="bi bi-pencil-square"></i>
+                    Editar
+
+                </a>
+
+                <a href="{% url 'activar_libro' libro.id %}"
+                   class="btn {% if libro.activo %}btn-danger{% else %}btn-success{% endif %}">
+
+                    {% if libro.activo %}
+
+                        <i class="bi bi-x-circle"></i>
+                        Desactivar
+
+                    {% else %}
+
+                        <i class="bi bi-check-circle"></i>
+                        Activar
+
+                    {% endif %}
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

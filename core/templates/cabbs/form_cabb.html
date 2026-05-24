@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ titulo }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h4 class="mb-0">
+
+                        <i class="bi bi-building"></i>
+
+                        {{ titulo }}
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form method="post"
+                          enctype="multipart/form-data">
+
+                        {% csrf_token %}
+
+                        <div class="row">
+
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label fw-bold">
+                                    Clave
+                                </label>
+
+                                {{ form.clave }}
+
+                            </div>
+
+                            <div class="col-md-8 mb-3">
+
+                                <label class="form-label fw-bold">
+                                    Nombre
+                                </label>
+
+                                {{ form.nombre }}
+
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+
+                                <label class="form-label fw-bold">
+                                    Responsable
+                                </label>
+
+                                {{ form.responsable }}
+
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+
+                                <label class="form-label fw-bold">
+                                    Foto
+                                </label>
+
+                                {{ form.foto }}
+
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+
+                                <label class="form-label fw-bold">
+                                    Descripción
+                                </label>
+
+                                {{ form.descripcion }}
+
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+
+    <label class="form-label fw-bold">
+    Localidades Atendidas
+</label>
+
+<input type="text"
+       id="buscarLocalidad"
+       class="form-control mb-2"
+       placeholder="Buscar localidad o municipio...">
+
+<div id="contenedorLocalidades"
+     class="border rounded p-3"
+     style="max-height: 400px; overflow-y: auto;">
+
+    {{ form.localidades }}
+
+</div>
+
+<small class="text-muted">
+    Puedes buscar y seleccionar múltiples localidades.
+</small>
+
+</div>
+
+                            <div class="col-md-12 mb-3">
+
+                                <div class="form-check">
+
+                                    {{ form.activo }}
+
+                                    <label class="form-check-label">
+                                        Activo
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a href="{% url 'lista_cabbs' %}"
+                               class="btn btn-secondary">
+
+                                Cancelar
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+
+                                <i class="bi bi-save"></i>
+
+                                Guardar
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const buscador = document.getElementById('buscarLocalidad');
+    const contenedor = document.getElementById('contenedorLocalidades');
+
+    buscador.addEventListener('keyup', function () {
+
+        const texto = this.value.toLowerCase();
+
+        const labels = contenedor.querySelectorAll('label');
+
+        labels.forEach(label => {
+
+            const contenido = label.textContent.toLowerCase();
+
+            const item = label.parentElement;
+
+            if (contenido.includes(texto)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+
+        });
+
+    });
+
+});
+</script>
+
+{% endblock %}

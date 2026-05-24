@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Importar Localidades{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-cloud-upload-fill"></i>
+                    Importar Localidades desde Excel
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="alert alert-info">
+                    <strong>Formato del Excel:</strong><br>
+                    CLAVE MUNICIPIO | MUNICIPIO | CLAVE LOCALIDAD | LOCALIDAD
+                </div>
+
+                <form method="post"
+      enctype="multipart/form-data"
+      id="formImportarLocalidades">
+
+    {% csrf_token %}
+
+    <div class="mb-4">
+
+        <label class="form-label fw-bold">
+            Archivo Excel
+        </label>
+
+        {{ form.archivo_excel }}
+
+    </div>
+
+    <div id="mensajeProcesandoLocalidades"
+         class="alert alert-warning d-none">
+
+        <div class="d-flex align-items-center gap-2">
+
+            <div class="spinner-border spinner-border-sm"></div>
+
+            <strong>
+                Procesando localidades, espera un momento...
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+
+        <a href="{% url 'lista_localidades' %}"
+           class="btn btn-outline-secondary">
+
+            Cancelar
+
+        </a>
+
+        <button type="submit"
+                id="btnImportarLocalidades"
+                class="btn btn-success">
+
+            <i class="bi bi-upload"></i>
+
+            Importar Localidades
+
+        </button>
+
+    </div>
+
+</form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<script>
+
+    const formImportarLocalidades = document.getElementById(
+        'formImportarLocalidades'
+    );
+
+    const btnImportarLocalidades = document.getElementById(
+        'btnImportarLocalidades'
+    );
+
+    const mensajeProcesandoLocalidades = document.getElementById(
+        'mensajeProcesandoLocalidades'
+    );
+
+    formImportarLocalidades.addEventListener('submit', function () {
+
+        btnImportarLocalidades.disabled = true;
+
+        btnImportarLocalidades.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+            Procesando...
+        `;
+
+        mensajeProcesandoLocalidades.classList.remove('d-none');
+
+    });
+
+</script>
+{% endblock %}

@@ -1,50 +1,284 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
+
     path('', views.home, name='home'),
-    path('ajustes/', views.ajustes_sistema, name='ajustes_sistema'), # NUEVO
+
+    # AJUSTES
+
+    path(
+        'ajustes/',
+        views.ajustes_sistema,
+        name='ajustes_sistema'
+    ),
+
+    # PRODUCTIVIDAD
+
+    path(
+        'productividad/',
+        views.productividad,
+        name='productividad'
+    ),
+
+    path(
+        'mi-productividad/',
+        views.mi_productividad,
+        name='mi_productividad'
+    ),
+
+    # CARÁTULAS
+
+    path(
+        'caratulas/',
+        views.caratulas,
+        name='caratulas'
+    ),
+
+    path(
+        'caratulas/pdf/',
+        views.generar_caratula_pdf,
+        name='generar_caratula_pdf'
+    ),
+
+    # MUNICIPIOS
+
+    path(
+        'municipios/',
+        views.lista_municipios,
+        name='lista_municipios'
+    ),
+
+    path(
+        'municipios/nuevo/',
+        views.registrar_municipio,
+        name='registrar_municipio'
+    ),
+
+    # LOCALIDADES
+
+    path(
+        'localidades/',
+        views.lista_localidades,
+        name='lista_localidades'
+    ),
+
+    path(
+        'localidades/nuevo/',
+        views.registrar_localidad,
+        name='registrar_localidad'
+    ),
+
+    path(
+        'localidades/importar/',
+        views.importar_localidades_excel,
+        name='importar_localidades_excel'
+    ),
+
+    path(
+        'localidades/por-municipio/<int:municipio_id>/',
+        views.localidades_por_municipio,
+        name='localidades_por_municipio'
+    ),
+
+    path(
+        'escuelas/',
+        views.lista_escuelas,
+        name='lista_escuelas'
+    ),
+
+    path(
+        'escuelas/importar/',
+        views.importar_escuelas_excel,
+        name='importar_escuelas_excel'
+    ),
+
+    path(
+    'escuelas/detalle/<int:escuela_id>/',
+    views.detalle_escuela_json,
+    name='detalle_escuela_json'
+    ),
+
+    path(
+    'escuelas/por-localidad/<int:localidad_id>/',
+    views.escuelas_por_localidad,
+    name='escuelas_por_localidad'
+    ),
+
+    path(
+    'escuelas/estadisticas/',
+    views.estadisticas_escuelas,
+    name='estadisticas_escuelas'
+    ),
+
+    # EXPEDIENTES
+
+    path(
+        'expedientes/',
+        views.lista_libros,
+        name='lista_libros'
+    ),
+
+    path(
+        'expedientes/detalle/<int:id>/',
+        views.detalle_libro,
+        name='detalle_libro'
+    ),
+
+    path(
+        'expedientes/nuevo/',
+        views.registrar_libro,
+        name='registrar_libro'
+    ),
+
+    path(
+        'expedientes/importar/',
+        views.importar_libros_excel,
+        name='importar_libros_excel'
+    ),
+
+    path(
+        'expedientes/plantilla-excel/',
+        views.descargar_plantilla_excel,
+        name='descargar_plantilla_excel'
+    ),
+
+    path(
+        'expedientes/editar/<int:id>/',
+        views.editar_libro,
+        name='editar_libro'
+    ),
+
+    path(
+        'expedientes/estado/<int:id>/',
+        views.activar_libro,
+        name='activar_libro'
+    ),
+
+    path(
+        'expedientes/eliminar/<int:id>/',
+        views.eliminar_libro,
+        name='eliminar_libro'
+    ),
+
+    path(
+        'expedientes/entregar/<int:id>/',
+        views.marcar_entregado,
+        name='marcar_entregado'
+    ),
+
+    path(
+        'expedientes/reporte-pdf/',
+        views.reporte_libros_pdf,
+        name='reporte_libros_pdf'
+    ),
+
+    path(
+        'expedientes/exportar-excel/',
+        views.exportar_libros_excel,
+        name='exportar_libros_excel'
+    ),
+
+    path(
+       'expedientes/importar-curps/',
+       views.importar_curps_excel,
+       name='importar_curps_excel'
+    ),
+
+    # RESPONSABLES
+
+    path(
+        'responsables/',
+        views.lista_autores,
+        name='lista_autores'
+    ),
+
+    path(
+        'responsables/nuevo/',
+        views.registrar_autor,
+        name='registrar_autor'
+    ),
+
+
+
+    # USUARIOS
+
+    path(
+        'usuarios/',
+        views.lista_usuarios,
+        name='lista_usuarios'
+    ),
+
+    path(
+        'usuarios/nuevo/',
+        views.crear_usuario,
+        name='crear_usuario'
+    ),
+
+    path(
+        'usuarios/editar/<int:id>/',
+        views.editar_usuario,
+        name='editar_usuario'
+    ),
+
+    path(
+        'usuarios/estado/<int:id>/',
+        views.activar_usuario,
+        name='activar_usuario'
+    ),
+
+    path(
+      'cabbs/',
+       views.lista_cabbs,
+       name='lista_cabbs'
+    ),
+
+    path(
+      'cabbs/nuevo/',
+      views.registrar_cabb,
+      name='registrar_cabb'
+    ),
+
+    path(
+       'cabbs/editar/<int:id>/',
+        views.editar_cabb,
+       name='editar_cabb'
+    ),
     
-    # LIBROS
-    path('libros/', views.lista_libros, name='lista_libros'),
-    path('libros/detalle/<int:id>/', views.detalle_libro, name='detalle_libro'),
-    path('libros/nuevo/', views.registrar_libro, name='registrar_libro'),
-    path('libros/importar/', views.importar_libros_excel, name='importar_libros_excel'),
-    path('libros/editar/<int:id>/', views.editar_libro, name='editar_libro'),
-    path('libros/estado/<int:id>/', views.activar_libro, name='activar_libro'),
-    path('libros/reporte-pdf/', views.reporte_libros_pdf, name='reporte_libros_pdf'),
-    path('libros/exportar-excel/', views.exportar_libros_excel, name='exportar_libros_excel'),
+    #MOVIMIENTOS
 
-    # PRÉSTAMOS
-    path('prestamos/', views.lista_prestamos, name='lista_prestamos'),
-    path('prestamos/nuevo/', views.registrar_prestamo, name='registrar_prestamo'),
-    path('prestamos/devolver/<int:id>/', views.devolver_prestamo, name='devolver_prestamo'),
-    path('prestamos/renovar/<int:id>/', views.renovar_prestamo, name='renovar_prestamo'),
-    path('prestamos/exportar-excel/', views.exportar_prestamos_excel, name='exportar_prestamos_excel'),
-    path('prestamos/comprobante/<int:id>/', views.comprobante_prestamo, name='comprobante_prestamo'),
-    path('prestamos/morosos/', views.lista_morosos, name='lista_morosos'),
-    path('prestamos/recordatorio/<int:id>/', views.enviar_recordatorio, name='enviar_recordatorio'),
-    path('mis-prestamos/', views.mis_prestamos, name='mis_prestamos'),
+    path(
+       'bitacora/',
+       views.bitacora_general,
+       name='bitacora_general'
+    ),
 
-    # RESERVAS
-    path('reservas/', views.lista_reservas, name='lista_reservas'),
-    path('reservas/mis-reservas/', views.mis_reservas, name='mis_reservas'),
-    path('reservas/crear/<int:id>/', views.reservar_libro, name='reservar_libro'),
-    path('reservas/anular/<int:id>/', views.anular_reserva, name='anular_reserva'),
+    # RESPALDOS
 
-    # LECTORES
-    path('lectores/', views.lista_lectores, name='lista_lectores'),
-    path('lectores/detalle/<int:id>/', views.detalle_lector, name='detalle_lector'),
-    path('lectores/carnet/<int:id>/', views.carnet_lector_pdf, name='carnet_lector_pdf'),
-    path('lectores/nuevo/', views.registrar_lector, name='registrar_lector'),
-    path('lectores/estado/<int:id>/', views.activar_lector, name='activar_lector'),
-
-    # CATÁLOGOS
-    path('autores/', views.lista_autores, name='lista_autores'),
-    path('autores/nuevo/', views.registrar_autor, name='registrar_autor'),
-    path('categorias/', views.lista_categorias, name='lista_categorias'),
-    path('categorias/nuevo/', views.registrar_categoria, name='registrar_categoria'),
+    path(
+        'respaldos/',
+        views.generar_respaldo_bd,
+        name='generar_respaldo_bd'
+    ),
 
     # PERFIL
-    path('perfil/', views.perfil, name='perfil'),
+
+    path(
+        'perfil/',
+        views.perfil,
+        name='perfil'
+    ),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
+
+    
+
+    

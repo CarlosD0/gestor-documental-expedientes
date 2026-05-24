@@ -13,8 +13,8 @@ SECRET_KEY = 'django-insecure-cambiar-esto-en-produccion'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Application definition
 INSTALLED_APPS = [
@@ -50,6 +50,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'biblioteca.context_processors.config_global',
             ],
         },
     },

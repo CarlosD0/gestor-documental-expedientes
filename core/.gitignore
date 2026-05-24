@@ -1,7 +1,33 @@
-# .gitignore
-env/
-venv/
+# Python
 __pycache__/
 *.pyc
-.DS_Store
+*.pyo
+*.pyd
+
+# Entornos virtuales
+env/
+venv/
+core/env/
+
+# Archivos privados
+.env
+*.log
+
+# Base de datos / respaldos
+*.sql
+*.sqlite3
+db.sqlite3
+respaldo_base_datos.json
+bk_basededatos.sql
+
+# Archivos subidos / evidencias
 media/
+
+# Static compilado
+staticfiles/
+
+# VS Code
+.vscode/
+
+# Excel de prueba o datos reales
+libros_ejemplo.xlsx

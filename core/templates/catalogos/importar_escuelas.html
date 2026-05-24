@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Importar Escuelas{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-success text-white py-3">
+
+                    <h4 class="mb-0">
+
+                        <i class="bi bi-cloud-upload-fill"></i>
+
+                        Importar Escuelas / CCT
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <div class="alert alert-info">
+
+                        <strong>Formato esperado:</strong>
+
+                        <hr>
+
+                        CLAVE MUNICIPIO |
+                        MUNICIPIO |
+                        CLAVE LOCALIDAD |
+                        LOCALIDAD |
+                        CCT |
+                        NOMBRE ESCUELA |
+                        NIVEL
+
+                    </div>
+
+                    <form method="post"
+      enctype="multipart/form-data"
+      id="formImportarEscuelas">
+
+    {% csrf_token %}
+
+    <div class="mb-4">
+
+        {{ form.archivo_excel.label_tag }}
+
+        {{ form.archivo_excel }}
+
+    </div>
+
+    <div id="mensajeProcesandoEscuelas"
+         class="alert alert-warning d-none">
+
+        <div class="d-flex align-items-center gap-2">
+
+            <div class="spinner-border spinner-border-sm"></div>
+
+            <strong>
+                Procesando escuelas y CCT, espera un momento...
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+
+        <a href="{% url 'lista_escuelas' %}"
+           class="btn btn-secondary">
+
+            Cancelar
+
+        </a>
+
+        <button type="submit"
+                id="btnImportarEscuelas"
+                class="btn btn-success">
+
+            <i class="bi bi-cloud-upload-fill"></i>
+
+            Importar
+
+        </button>
+
+    </div>
+
+</form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+    const formImportarEscuelas = document.getElementById(
+        'formImportarEscuelas'
+    );
+
+    const btnImportarEscuelas = document.getElementById(
+        'btnImportarEscuelas'
+    );
+
+    const mensajeProcesandoEscuelas = document.getElementById(
+        'mensajeProcesandoEscuelas'
+    );
+
+    formImportarEscuelas.addEventListener('submit', function () {
+
+        btnImportarEscuelas.disabled = true;
+
+        btnImportarEscuelas.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+            Procesando...
+        `;
+
+        mensajeProcesandoEscuelas.classList.remove('d-none');
+
+    });
+
+</script>
+{% endblock %}
