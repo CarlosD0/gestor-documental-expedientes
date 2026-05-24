@@ -31,3 +31,6 @@ staticfiles/
 
 # Excel de prueba o datos reales
 libros_ejemplo.xlsx
+
+../env/
+*.xlsx
